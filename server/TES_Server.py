@@ -22,7 +22,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         # self.request is the TCP socket connected to the client
         self.data = self.request.recv(1024).strip()
         sRecv = str(self.data, "utf-8")
-        print("{} wrote: {}".format(self.client_address[0],sRecv))
+        printlog("{} wrote: {}".format(self.client_address[0],sRecv))
         # Parse instructions separated by spaces
         lRecv = sRecv.split(" ")
         if "test" in dPrm and dPrm["test"]=="1":
@@ -42,7 +42,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                 lD.append(D)
             sD = " ".join(map(str,lD))
             self.request.sendall(bytes(sD, "utf-8"))
-            print("Data sent : "+sD)
+            printlog("Data sent : "+sD)
         elif lRecv[0].upper() == "SET":
              # Output to apply defined by the number of the output and a time in seconds
              lPrm = lRecv[1].split(",")
@@ -50,7 +50,15 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
                 instr.write_register(int(19), int(lPrm[0]))
 
 
-
+def printlog(s):
+    """
+    Print message with date and time and flush the console
+    @see https://www.turnkeylinux.org/blog/unix-buffering
+    """
+    import time
+    import sys
+    print(time.strftime("%Y/%m/%d %H:%M:%S")+" : "+s)
+    sys.stdout.flush()
 
 #-------------------------------------------------------------------------------
 # Programme principal
@@ -77,7 +85,7 @@ CfgPrm.read(sIniFile)
 #initialisation de dPrm : dictionnaire des parametres generaux de la compilation
 dPrm={}
 if not CfgPrm.has_section(sSection):
-    print("Erreur: Section "+sSection+" not found in "+sIniFile)
+    printlog("Erreur: Section "+sSection+" not found in "+sIniFile)
     exit
 for item in CfgPrm.items(sSection):
     dPrm[item[0]]=item[1]
@@ -95,7 +103,7 @@ if not "test" in dPrm or dPrm["test"]!="1":
     #print minimalmodbus._getDiagnosticString()
     instr = minimalmodbus.Instrument('/'+dPrm['serial_port'], 1)
 else:
-    print("Testing without connection to modbus hardware")
+    printlog("Testing without connection to modbus hardware")
 #-------------------------------------------------------------------------------
 
 
@@ -107,7 +115,7 @@ HOST, PORT = dPrm['tcp_host'], int(dPrm['tpc_port'])
 # Create the server, binding to localhost on port dPrm['tpc_port']
 server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
 
-print("Listening TCP communication on host "+dPrm['tcp_host']+" port "+dPrm['tpc_port'])
+printlog("Listening TCP communication on host "+dPrm['tcp_host']+" port "+dPrm['tpc_port'])
 
 # Activate the server; this will keep running until you
 # interrupt the program with Ctrl-C
