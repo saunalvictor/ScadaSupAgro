@@ -35,7 +35,10 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             lD = []
             for Reg in lReg:
                 if not "test" in dPrm or dPrm["test"]!="1":
-                    D=instr.read_register(int(Reg), 0)
+                    try:
+                        D=instr.read_register(int(Reg), 0)
+                    except IOError as e:
+                        printlog("Error: read_register({}): {}, {}".format(Reg,e.errno, e.strerror))
                 else:
                     time.sleep(0.1)
                     D=random.random()*255
@@ -75,17 +78,19 @@ def printlog(s):
 ## - ts: time step in seconds between each data acquisition
 ## - test: test=1 for testing the program without communication
 import os,sys
+printlog("Starting server...")
 sCurrentPath = os.path.abspath(os.path.dirname(sys.argv[0]))
 os.chdir(sCurrentPath)
 sIniFile="TES_Server.ini"
 sSection="CONFIG"
 import configparser as cp
 CfgPrm = cp.ConfigParser()
+printlog("Reading configuration in {}...".format(sIniFile))
 CfgPrm.read(sIniFile)
 #initialisation de dPrm : dictionnaire des parametres generaux de la compilation
 dPrm={}
 if not CfgPrm.has_section(sSection):
-    printlog("Erreur: Section "+sSection+" not found in "+sIniFile)
+    printlog("Error: Section "+sSection+" not found in "+sIniFile)
     exit
 for item in CfgPrm.items(sSection):
     dPrm[item[0]]=item[1]
@@ -94,7 +99,7 @@ for item in CfgPrm.items(sSection):
 # Initialisation of Modbus communication
 if not "test" in dPrm or dPrm["test"]!="1":
     import minimalmodbus
-    print("Connecting to modbus hardware")
+    print("Connecting to modbus hardware...")
     minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = True
     minimalmodbus.BAUDRATE = 9600
     minimalmodbus.PARITY = 'E'
@@ -113,12 +118,12 @@ else:
 HOST, PORT = dPrm['tcp_host'], int(dPrm['tpc_port'])
 
 # Create the server, binding to localhost on port dPrm['tpc_port']
+printlog("Listening TCP communication on host {} port {}".format(dPrm['tcp_host'],dPrm['tpc_port']))
 server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
-
-printlog("Listening TCP communication on host "+dPrm['tcp_host']+" port "+dPrm['tpc_port'])
 
 # Activate the server; this will keep running until you
 # interrupt the program with Ctrl-C
+printlog("Server started")
 server.serve_forever()
 
 #-------------------------------------------------------------------------------
