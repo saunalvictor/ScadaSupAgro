@@ -19,38 +19,58 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
     """
 
     def handle(self):
-        # self.request is the TCP socket connected to the client
-        self.data = self.request.recv(1024).strip()
-        sRecv = str(self.data, "utf-8")
-        printlog("{} wrote: {}".format(self.client_address[0],sRecv))
-        # Parse instructions separated by spaces
-        lRecv = sRecv.split(" ")
+        bConnected = True
+        import socket
         if "test" in dPrm and dPrm["test"]=="1":
             import random
             import time
 
-        if lRecv[0].upper() == "GET":
-            # Creating a list from the registries number to acquire
-            lReg = lRecv[1].split(",")
-            lD = []
-            for Reg in lReg:
-                if not "test" in dPrm or dPrm["test"]!="1":
-                    try:
-                        D=instr.read_register(int(Reg), 0)
-                    except IOError as e:
-                        printlog("Error: read_register({}): {}, {}".format(Reg,e.errno, e.strerror))
-                else:
-                    time.sleep(0.1)
-                    D=random.random()*255
-                lD.append(D)
-            sD = " ".join(map(str,lD))
-            self.request.sendall(bytes(sD, "utf-8"))
-            printlog("Data sent : "+sD)
-        elif lRecv[0].upper() == "SET":
-             # Output to apply defined by the number of the output and a time in seconds
-             lPrm = lRecv[1].split(",")
-             if not "test" in dPrm or dPrm["test"]!="1":
-                instr.write_register(int(19), int(lPrm[0]))
+        while bConnected:        
+            sRecv = ""
+            while sRecv == "":            
+                # self.request is the TCP socket connected to the client
+                self.data = self.request.recv(1024)
+                if not self.data:
+                    bConnected = False                    
+                    break
+                self.data = self.data.strip()
+                sRecv = str(self.data, "utf-8")
+            if not bConnected:
+                break
+            printlog("{} wrote: {}".format(self.client_address[0],sRecv))
+            # Parse instructions separated by spaces
+            lRecv = sRecv.split(" ")
+    
+            if lRecv[0].upper() == "GET":
+                # Creating a list from the registries number to acquire
+                lReg = lRecv[1].split(",")
+                lD = []
+                for Reg in lReg:
+                    if not "test" in dPrm or dPrm["test"]!="1":
+                        try:
+                            D=instr.read_register(int(Reg), 0)
+                        except IOError as e:
+                            printlog("Error: read_register({}): {}, {}".format(Reg,e.errno, e.strerror))
+                    else:
+                        time.sleep(0.1)
+                        D=random.random()*255
+                    lD.append(D)
+                sD = " ".join(map(str,lD))
+                try:
+                    self.request.sendall(bytes(sD, "utf-8"))
+                    printlog("Data sent : "+sD)
+                except socket.error as e:
+                    printlog("Error: {}, {}".format(e.errno, e.strerror))
+                    break
+            elif lRecv[0].upper() == "SET":
+                 # Output to apply defined by the number of the output and a time in seconds
+                 lPrm = lRecv[1].split(",")
+                 if not "test" in dPrm or dPrm["test"]!="1":
+                    instr.write_register(int(19), int(lPrm[0]))
+            elif sRecv == "CLOSE":
+                bConnected = False
+            printlog("Instruction End")
+        printlog("Connection ended")
 
 
 def printlog(s):
@@ -99,7 +119,7 @@ for item in CfgPrm.items(sSection):
 # Initialisation of Modbus communication
 if not "test" in dPrm or dPrm["test"]!="1":
     import minimalmodbus
-    print("Connecting to modbus hardware...")
+    printlog("Connecting to modbus hardware...")
     minimalmodbus.CLOSE_PORT_AFTER_EACH_CALL = True
     minimalmodbus.BAUDRATE = 9600
     minimalmodbus.PARITY = 'E'
@@ -109,6 +129,13 @@ if not "test" in dPrm or dPrm["test"]!="1":
     instr = minimalmodbus.Instrument('/'+dPrm['serial_port'], 1)
 else:
     printlog("Testing without connection to modbus hardware")
+#-------------------------------------------------------------------------------
+
+
+#-------------------------------------------------------------------------------
+# Initialisation of actuators
+lActuators = dPrm["tor_out"].split(",")
+
 #-------------------------------------------------------------------------------
 
 
