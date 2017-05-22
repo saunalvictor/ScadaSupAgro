@@ -5,15 +5,19 @@
 ## @author David Dorchies
 ## @date 28/03/2013
 #-------------------------------------------------------------------------------
-
+import logging
+logging.basicConfig(
+    format='%(asctime)s %(levelname)s  %(threadName)s %(funcName)s %(message)s', 
+    level=logging.DEBUG
+)
 
 def getConnection():
     # Create a socket (SOCK_STREAM means a TCP socket)
     import socket
-    print("Connecting to host "+dPrm['host']+":"+dPrm['port']+"...")
+    logging.info("Connecting to host "+dPrm['host']+":"+dPrm['port']+"...")
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.connect((dPrm['host'], int(dPrm['port'])))
-    print("Connection established to host "+dPrm['host']+":"+dPrm['port'])
+    logging.info("Connection established to host "+dPrm['host']+":"+dPrm['port'])
     return sock    
 
 
@@ -23,17 +27,17 @@ def getData(sock):
     global dPrm,csvOut
     import os.path
     if os.path.exists("stop.txt"):
-        print("stop.txt file found : stop acquisition")
+        logging.info("stop.txt file found : stop acquisition")
         sock.sendall(bytes("CLOSE\n", "utf-8"))
         sock.close()
         return False # Indicate to stop acquisition
     #Data acquisition
     sInstr = "GET " + dPrm["reg"]
-    print("Send instruction : "+sInstr)
+    logging.info("Send instruction : "+sInstr)
     sock.sendall(bytes(sInstr + "\n", "utf-8"))
     # Receive data from the server and shut down
     received = str(sock.recv(1024), "utf-8")
-    print("Received : "+received)
+    logging.info("Received : "+received)
     import datetime
     now = datetime.datetime.now()
     lD=[now.strftime("%Y-%m-%d %H:%M:%S.%f")]
@@ -62,7 +66,7 @@ CfgPrm.read(sIniFile)
 #initialisation de dPrm : dictionnaire des parametres generaux de la compilation
 dPrm={}
 if not CfgPrm.has_section(sSection):
-    print("Erreur: Section "+sSection+" not found in "+sIniFile)
+    logging.info("Erreur: Section "+sSection+" not found in "+sIniFile)
     exit
 for item in CfgPrm.items(sSection):
     dPrm[item[0]]=item[1]
@@ -88,7 +92,7 @@ while bLoop:
     start_time = time.time()
     bLoop = getData(sock)
     time_sleep = float(dPrm["ts"]) - (time.time() - start_time)
-    #print(time_sleep)
+    #logging.info(time_sleep)
     if time_sleep > 0:
         time.sleep(time_sleep)
 
