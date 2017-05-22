@@ -16,8 +16,5 @@ if isfile(sScriptPath+"conf_user.sce") then
     exec(sScriptPath+'conf_user.sce',-1);
 end
 
-// Load calibration of the sensors
-cfg.Cal = ReadCalibration(cfg);
-
-// Display Calibration
+// Load & Display calibration of the sensors
 DisplayCalibration(cfg);

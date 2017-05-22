@@ -19,12 +19,26 @@ cfg.TimeDuration = 5*60; // Duration of the experiment in seconds
 // List of registers for data acquisition
 cfg.tiRegisters = 3:6; // 3:6 = Entrées analogiques 1 à 4
 
+//******************************************************************************
+// [ C A L I B R A T I O N ]
+//******************************************************************************
+
 // Fichier contenant la calibration des capteurs
-cfg.sCalPath = cfg.sScriptPath + "calibration.txt";
+cfg.calcfg.sPath = cfg.sScriptPath + "calibration.txt";
 // Format du fichier %n %m %h avec :
 // - %n le n° du registre
 // - %m la valeur de sortie du capteur (entier entre 0 et 1023)
 // - %h le tirant d'eau en mètres dans le canal
+
+// Default measurement period
+cfg.calcfg.init.period = 2;
+
+// Default measurement duration
+cfg.calcfg.init.duration = 30;
+
+//******************************************************************************
+// [ M E A S U R E M E N T  S E T T I N G S ]
+//******************************************************************************
 
 // Mode de calcul du calage des capteurs :
 // - 1 interpolation entre les points de mesures 

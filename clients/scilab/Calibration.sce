@@ -8,118 +8,79 @@ sScriptPath = get_file_path('Calibration.sce');
 // Initialisation des paramètres et fonctions
 exec(sScriptPath+'scilab_functions'+filesep()+'init.sce',-1);
 
+errcatch(-1,"pause")
+
 // Start message
-bOn = %T; // Mettre à %F pour stopper les opérations de calibration
-sMessage = "Capteurs connectés aux registres: "+strcat(string(cfg.tiRegisters),', ');
-if messagebox([sMessage; ...
-    "Pour modifier la liste des capteurs, modifier cfg.tiRegisters dans le fichier conf_user.sce."; ...
-    "Démarrer le calage des capteurs ?"], "modal", "question", ["Démarrer" "Annuler"]) == 1 then
-    //    cfg.Cal = ReadCalibration(cfg);
-    //    if typeof(cfg.Cal) == "st" then
-    //        for i = size(cfg.Cal,1)
-    //            if find(cfg.Cal(i).iReg==cfg.tiRegisters) then
-    //                iQ = messagebox(["Des données de calibrations existent déjà pour au moins un des capteurs."; ...
-    //                    "Que voulez-vous faire ?"], "modal", "warning", ["Ecraser les données existantes" "Ajouter de nouvelles mesures"])
-    //                select iQ
-    //                case 0
-    //                    bOn = %F
-    //                case 1
-    //                    cfg.Cal = null();
-    //                end
-    //                break;
-    //            end
-    //        end
-    //    end
-    if bOn then
-        Periode=evstr(x_dialog('Période de mesure (secondes)','2'));
-        Duration=evstr(x_dialog('Durée de mesure (secondes)','20'));
-        nbStep = floor(Duration/Periode);
+if messagebox(["Sensors plugged to registers: "+strcat(string(cfg.tiRegisters),', '); ...
+    "Modify cfg.tiRegisters in the file conf_user.sce for changing plugged sensors."; ...
+    "Start sensor calibrations?"], "modal", "question", ["Start" "Cancel"]) == 1 then
+
+    // Set configuration
+    [bOn, cfg] = CalSetConf(cfg)
+    if ~bOn then
+        messagebox(["Calibration aborted"],"modal","warning");
     end
+
     nbMesure = 0; // Nombre de mesure réalisé pour tous les capteurs
     mRawData = []; // Matrice de stockage des mesures capteurs
     mWtrLvl = 0; // Matrice de stockage des hauteurs correspondantes au mesures
+    tiSubPlotSize = GetSubPlotSize(length(cfg.tiRegisters))
 
     while bOn
-        for iReg = cfg.tiRegisters
-            numReg = find(iReg==cfg.tiRegisters);
-            iMb = messagebox( ...
-            ["Stabilisez les niveaux d''eau dans les canaux avant de démarrer la mesure."; ...
-            msprintf("Démarrer la mesure n°%i du capteur n°%i (registre n°%i) ?",nbMesure+1,numReg,iReg)], ...
-            "modal", "question", ["Démarrer" "Annuler"]);
-            if iMb~=1 then
-                bOn = %F;
-                break;
-            end
-            mD = [];
-            realtimeinit(Periode);
-            winH = waitbar(0,"Capture en cours...");
-            tic();
-            for i = 0:nbStep
-                sMsg = msprintf("Mesure n°%i / Capteur n°%i\n Acquisition %i/%i - Temps %3.1f/%3.1f sec.",nbMesure+1,numReg,i,nbStep,toc(),Duration);
-                if i>0 then
-                    sMsg = [sMsg ; msprintf("\nMesures brutes du capteur : Last = %i, Min = %i, Moy = %i, Max = %i",mD($),tDmin,tDmean,tDmax)]
-                end
-                waitbar(i/nbStep,sMsg,winH);
-                realtime(i);
-                mD = [mD;GetRawData(cfg,iReg)];
-                // Calcul des stats des mesures
-                tDmean = mean(mD,"r");
-                tDmin = min(mD,"r");
-                tDmax = max(mD,"r");
-            end
-            close(winH);
-
-            mRawData(nbMesure+1,numReg) = tDmean;
-            if cfg.socket.bUse then
-                sDef = "0";
-            else
-                sDef = string(tDmean/500);
-            end
-            mWtrLvl(nbMesure+1,numReg)=evstr(x_dialog( ...
-            [msprintf("Mesure n°%i",nbMesure+1); ...
-            msprintf("Capteur n°%i (registre n°%i)",numReg,iReg); ...
-            msprintf("Mesures brutes du capteur : Min = %i, Moy = %i, Max = %i",tDmin,tDmean,tDmax); ...
-            "Hauteur d''eau mesurée en mètres ?"], ...
-            sDef));
+        s = []
+        if max(cfg.calcfg.vNbMes)>0 then
+            s = s + msprintf("%3i ",cfg.calcfg.vNbMes');
+            s = "Number of measurements: " + s
         end
-        if bOn then
-            nbMesure = nbMesure + 1;
+        if min(cfg.calcfg.vNbMes)<2 then
+            s = [s; "A minimum of 2 measures by sensor is required for achieve calibration"]
         end
-    end
-
-    // On ne garde que les mesures complètes de tous les capteurs
-    mRawData = mRawData(1:nbMesure,:);
-    mWtrLvl = mWtrLvl(1:nbMesure,:);    
-
-    if nbMesure > 1 then
-        // Enregistrement des paramètres
-        if ~isfield(cfg,"Cal") then
-            cfg.Cal = struct();
+        s = [s;"Stabilize the water levels in the channels before starting the measurement."; ...
+            msprintf("Start measurement #%i?",nbMesure+1); "(Press Cancel for endding calibration)"]
+        iMb = messagebox( s, "modal", "question", ["Start" "Cancel"]);
+        if iMb~=1 then
+            bOn = %F;
+            break;
         end
-
-        for iCal = 1:size(cfg.tiRegisters,2)
-            cfg.Cal(iCal).iReg = cfg.tiRegisters(iCal);
-            cfg.Cal(iCal).m = [];
-            cfg.Cal(iCal).m = [cfg.Cal(iCal).m;mRawData(:,iCal),mWtrLvl(:,iCal)];
-        end
-
-        if isfile(cfg.sCalPath) then
-            tOldFileInfo = fileinfo(cfg.sCalPath);
-            sOldFileName = cfg.sCalPath+"_"+msprintf("%i",getdate(tOldFileInfo(6))');
-            movefile(cfg.sCalPath,sOldFileName);
-        end
-
-        f = mopen(cfg.sCalPath,'w')
-        for i = 1:size(cfg.Cal,1)
-            for j = 1:size(cfg.Cal(i).m,1)
-                mfprintf(f,"%i\t%i\t%6.4f\n",cfg.Cal(i).iReg,cfg.Cal(i).m(j,:)); 
+        nbMesure = nbMesure + 1;
+        mD = []; // Collected data
+        mDmean = [];
+        mDstd = [];
+        vt = [];
+        realtimeinit(cfg.calcfg.Periode);
+        winH = waitbar(0,"Data acquisition in progress...");
+        tic();
+        for i = 0:cfg.calcfg.nbStep
+            sMsg = msprintf("Processing measurement #%i / Sensors #%s\n Acquisition %i/%i - Time %3.2f/%3.2f sec.",nbMesure,strcat(string(cfg.tiRegisters),', '),i,cfg.calcfg.nbStep,toc(),cfg.calcfg.Duration);
+            waitbar(i/cfg.calcfg.nbStep,sMsg,winH);
+            realtime(i);
+            vt = [vt; toc()];
+            mD = [mD;GetRawData(cfg)];
+            // Calcul des stats des mesures
+            mDmean = [mDmean;mean(mD,"r")];
+            mDstd = [mDstd; stdev(mD,"r")];
+            clf();
+            for iReg = 1:length(cfg.tiRegisters)
+                subplot(tiSubPlotSize(1),tiSubPlotSize(2),iReg);
+                plot(vt,[mD(:,iReg),mDmean(:,iReg),mDmean(:,iReg)+mDstd(:,iReg),mDmean(:,iReg)-mDstd(:,iReg)]);
+                xtitle(msprintf("Sensor #%i\n Last = %i, Mean = %3.2f, Standard deviation = %3.2f",iReg,mD($,iReg),mDmean($,iReg),mDstd($,iReg)));
             end
         end
-        mclose(f);
-        messagebox(["Mesures de calibrations enregistrées dans :";cfg.sCalPath],"modal","info");
-        DisplayCalibration(cfg)
+        close(winH);
+
+        mRawData(nbMesure,:) = mDmean($,:);
+        sWtrLvl = CalEditWaterDepth(cfg, nbMesure)
+        if sWtrLvl~=struct() then
+            cfg = CalWriteCalibration(cfg, nbMesure==1, mRawData(nbMesure,:), sWtrLvl)
+        end
+    end // while bOn
+
+    if min(cfg.calcfg.vNbMes)<2 then
+        messagebox(["Calibration aborted","Each sensor needs a minimum of 2 measures";...
+            "The file "+cfg.calcfg.sPath+" is not ready to be used."],"modal","error");
     else
-        messagebox(["Nombre de mesures insuffisant";"Il faut faire au moins 2 mesures à chaque capteur."],"modal","error");
+        messagebox(["Mesures de calibrations enregistrées dans :";cfg.calcfg.sPath],"modal","info");
+        DisplayCalibration(cfg)
     end
 end
 
