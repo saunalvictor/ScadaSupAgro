@@ -1,0 +1,10 @@
+outputs
+RaspberryPi
+*.bak
+*.*~
+*.pyc
+clients/python/TES_Client.ini
+clients/python/TES_*.txt
+clients/scilab/calibration*.txt
+clients/scilab/conf_user.sce
+clients/scilab/objectives.txt
