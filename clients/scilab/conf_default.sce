@@ -51,7 +51,7 @@ cfg.sOutputPath = cfg.sScriptPath + "outputs" + filesep();
 // Configuration of socket communication
 cfg.socket.bUse = %T; // Si %F le socket n'est pas utilisé (pour débuggage du script)
 cfg.socket.number = 1; // Internal scilab number of the socket
-cfg.socket.sHost = "147.99.14.30"; // IP address of the server
+cfg.socket.sHost = "147.99.14.52"; // IP address of the server
 cfg.socket.iPort = 443; // IP listening port of the server
 cfg.socket.TimeOut = 10 / 86400; // Time out for aborting communication (day unit)
 cfg.socket.Connected = %F; // Variable managing the connection state
