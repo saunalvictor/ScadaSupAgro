@@ -1,13 +1,16 @@
-def printlog(s, bMicro = False, sep = ": "):
+from datetime import datetime
+import sys
+
+def printlog(s, bMilliseconds = False, sep = ": "):
     """
     Print message with date and time and flush the console
     @see https://www.turnkeylinux.org/blog/unix-buffering
     """
-    from datetime import datetime
-    import sys
-    if bMicro: 
-        sMicro = ",%f"
+    if bMilliseconds:
+        sDateTime = datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3]
     else:
-        sMicro = ""
-    print(datetime.now().strftime("%Y/%m/%d %H:%M:%S" + sMicro) + sep + s)
+        sDateTime = datetime.now().strftime("%Y/%m/%d %H:%M:%S")
+
+    print(sDateTime + sep + s)
+
     sys.stdout.flush()

@@ -10,20 +10,25 @@ def getIniParameters(sFile):
     """
     import os,sys
     from printlog import printlog
-    printlog("Starting server...")
     sCurrentPath = os.path.abspath(os.path.dirname(sys.argv[0]))
     os.chdir(sCurrentPath)
     sIniFile = sFile + ".ini"
     sSection="CONFIG"
     import configparser as cp
-    CfgPrm = cp.ConfigParser()
+    cfg = cp.ConfigParser()
     printlog("Reading configuration in {}...".format(sIniFile))
-    CfgPrm.read(sIniFile)
+    try:
+        with open(sIniFile) as f:
+            cfg.read_file(f)
+    except IOError:
+        printlog("ERROR : Fail to open "+sIniFile)
+        sys.exit()
     #initialisation de dPrm : dictionnaire des parametres generaux de la compilation
+
     dPrm={}
-    if not CfgPrm.has_section(sSection):
-        printlog("Error: Section "+sSection+" not found in "+sIniFile)
-        exit
-    for item in CfgPrm.items(sSection):
+    if not cfg.has_section(sSection):
+        printlog("ERROR: Section "+sSection+" not found in "+sIniFile)
+        sys.exit()
+    for item in cfg.items(sSection):
         dPrm[item[0].strip()]=item[1].strip()
     return dPrm

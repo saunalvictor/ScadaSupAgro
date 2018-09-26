@@ -16,9 +16,12 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
         import socket
 
         from printlog import printlog
-        from hard_com import HardCom
-        hardcom = HardCom(dPrm["test"]=="1")
-        bConnected = hardcom.bConnected
+        #from hard_com import HardCom
+        #hardcom = HardCom(dPrm["test"]=="1")
+        #bConnected = hardcom.bConnected
+        from read_data import ReadData
+        rd = ReadData(dPrm)
+        bConnected = True
         while bConnected:
             sRecv = ""
             while sRecv == "":
@@ -38,7 +41,8 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
 
             if sInstruction == "GET":
                 if len(lRecv) > 1:
-                    sSend = hardcom.get(lRecv[1])
+                    #sSend = hardcom.get(lRecv[1])
+                    sSend = rd.get_last_data()
                 else:
                     sSend = "ERROR: Instruction GET needs parameters"
 
@@ -56,7 +60,7 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             sSend = sSend + "\n"
             try:
                 self.request.sendall(sSend.encode("ISO-8859-1"))
-                printlog("Data sent : "+sSend)
+                printlog("Data sent : "+sSend.strip())
             except socket.error as e:
                 printlog("Error: {}, {}".format(e.errno, e.strerror))
                 break

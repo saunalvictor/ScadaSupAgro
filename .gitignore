@@ -2,6 +2,7 @@ outputs
 *.bak
 *.*~
 *.pyc
+*.log
 /clients/python/TES_Client.ini
 /clients/python/TES_*.txt
 /clients/scilab/calibration*.txt
