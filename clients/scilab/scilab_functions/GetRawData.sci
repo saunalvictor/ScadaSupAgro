@@ -7,7 +7,6 @@
 /// @return tD [1 x nb registres] vecteur avec les valeurs entières des registres
 //******************************************************************************
 function tD = GetRawData(cfg,tiRegisters)
-    //errcatch(-1,"pause");
     if ~isdef("tiRegisters","local") then
         tiRegisters = cfg.tiRegisters
     end
@@ -18,6 +17,7 @@ function tD = GetRawData(cfg,tiRegisters)
     mprintf("Sending ""%s"" to %s:%i\n",sQuery,cfg.socket.sHost,cfg.socket.iPort)
     if cfg.socket.bUse then
         if ~cfg.socket.Connected then
+            mprintf("Open socket %i; Host %s:%i\n", cfg.socket.number,cfg.socket.sHost,cfg.socket.iPort)
             SOCKET_open(cfg.socket.number,cfg.socket.sHost,cfg.socket.iPort);
             cfg.socket.Connected = %T
         end

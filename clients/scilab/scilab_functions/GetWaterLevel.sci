@@ -9,7 +9,6 @@
 /// @date 15/11/2013
 //******************************************************************************
 function [tY, tD] = GetWaterLevel(cfg,tiRegisters)
-    errcatch(-1,"pause");
     if ~isdef("tiRegisters","local") then
         tiRegisters = cfg.tiRegisters
     end

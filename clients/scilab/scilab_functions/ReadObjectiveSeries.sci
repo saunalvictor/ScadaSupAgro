@@ -9,7 +9,6 @@
 /// @date 15/11/2013
 //******************************************************************************
 function mObj = ReadObjectiveSeries(cfg)
-    errcatch(-1,"pause");
     M = fscanfMat(cfg.sObjPath);
     stObj = struct();
     tCpt = zeros(1,size(cfg.tiRegisters,2));

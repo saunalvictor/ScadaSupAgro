@@ -8,8 +8,6 @@ sScriptPath = get_file_path('Calibration.sce');
 // Initialisation des paramètres et fonctions
 exec(sScriptPath+'scilab_functions'+filesep()+'init.sce',-1);
 
-errcatch(-1,"pause")
-
 // Start message
 if messagebox(["Sensors plugged to registers: "+strcat(string(cfg.tiRegisters),', '); ...
     "Modify cfg.tiRegisters in the file conf_user.sce for changing plugged sensors."; ...

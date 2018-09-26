@@ -33,6 +33,11 @@ if messagebox(["TP régulation"; msprintf("Durée : %i minutes",cfg.TimeDuration
         "Prêt pour démarrer ?"], "modal", "question", ["Démarrer" "Annuler"]) == 1 then
     
     fOut = OpenOutputFiles(cfg);
+    if ~cfg.socket.Connected then
+        mprintf("Open socket %i; Host %s:%i\n", cfg.socket.number,cfg.socket.sHost,cfg.socket.iPort)
+        SOCKET_open(cfg.socket.number,cfg.socket.sHost,cfg.socket.iPort);
+        cfg.socket.Connected = %T
+    end
     // Defining time step for real time control
     realtimeinit(cfg.TimeStep);
     // Boucle sur le temps déf dans les param

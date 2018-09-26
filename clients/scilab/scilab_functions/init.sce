@@ -30,5 +30,3 @@ for i=1:size(tsFunction,1)
     end
 end
 clear tsFunction;
-
-errcatch(-1,"pause");
