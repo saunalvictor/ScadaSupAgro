@@ -11,7 +11,7 @@ import sched, time
 s = sched.scheduler(time.time, time.sleep)
 
 from get_ini_parameters import getIniParameters
-dPrm = getIniParameters("scada_aggregator")
+dPrm = getIniParameters("scada_logger")
 
 from hard_com import HardCom
 hardcom = HardCom(dPrm["test"]=="1")
