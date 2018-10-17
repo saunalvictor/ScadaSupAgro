@@ -28,5 +28,5 @@ class HardCom:
                 sOut = "ERROR: reading serial data"
         else:
             from random import random
-            sOut = " ".join(map(str,[int(random()*2) for x in range(0,len(s.split(",")))]))
+            sOut = " ".join(map(str,[int(random()*100) for x in range(0,len(s.split(",")))]))
         return sOut

@@ -19,8 +19,12 @@ hardcom = HardCom(dPrm["test"]=="1")
 def do_measurement(dPrm, hardcom, last_data, sc):
     sData = hardcom.get("1,2,3,4").replace(" ", ";").strip()
     s.enter(0.5, 1, do_measurement, (dPrm, hardcom, sData, sc,))
-    if(sData != last_data):
-        printlog(sData, True, ";")
+    lData = sData.split(";")
+    try:
+        if any(float(sItem) > float(dPrm['valuemin']) for sItem in lData):
+            printlog(sData, True, ";")
+    except:
+        pass
 
 last_data = ""
 s.enter(0.5, 1, do_measurement, (dPrm, hardcom, last_data, s,))
