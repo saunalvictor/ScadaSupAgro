@@ -10,23 +10,22 @@
 # Programme principal
 #-------------------------------------------------------------------------------
 
-from get_ini_parameters import getIniParameters
-dPrm = getIniParameters("scada_server")
+from scada_misc import getIniParameters
+dPrm = getIniParameters("scada.ini")
+dPrmS = dPrm['SERVER']
 
 #-------------------------------------------------------------------------------
 # Mise en route du serveur TCP
-HOST, PORT = dPrm['tcp_host'], int(dPrm['tpc_port'])
+HOST, PORT = dPrmS['tcp_host'], int(dPrmS['tpc_port'])
 
 # Create the server, binding to localhost on port dPrm['tpc_port']
-from printlog import printlog
-printlog("Listening TCP communication on host {} port {}".format(HOST, PORT))
+from scada_misc import createLog
 import socketserver
-from my_tcp_handler import MyTCPHandler
+from scada_server_handler import MyTCPHandler
 server = socketserver.TCPServer((HOST, PORT), MyTCPHandler)
 
 # Activate the server; this will keep running until you
 # interrupt the program with Ctrl-C
-printlog("Starting server...")
 server.serve_forever()
 
 #-------------------------------------------------------------------------------

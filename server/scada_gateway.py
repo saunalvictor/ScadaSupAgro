@@ -1,35 +1,53 @@
-from get_ini_parameters import getIniParameters
-dPrm = getIniParameters("scada_gateway")
 
+def scadaGateway(dPrm):
+    import json
+    import requests
 
-from read_data import ReadData
-from printlog import printlog
-import requests
-import json
+    dPrmG = dPrm['GATEWAY']
 
-rd = ReadData(dPrm)
+    from scada_misc import createLog
+    log = createLog(dPrm['LOGGER']['level'])
+    log.info('Starting Scada Gateway')
 
-import sched, time
-s = sched.scheduler(time.time, time.sleep)
+    from scada_var import ScadaDatabase
+    scadaDB = ScadaDatabase(log, dPrm['DATA_LOGGER'])
 
-def send_to_plateform(dPrm, rd, sLastDateTime, sc):
-    sData = rd.last_line(ignore_ending_newline=True).decode('utf-8')
-    lData = sData.split(";")
-    s.enter(float(dPrm['frequency']), 1, send_to_plateform, (dPrm, rd, lData[0], sc,))
-    if lData[0] != sLastDateTime:
-        lData.pop(0)
-        dTelemetry = {}
-        for idx, val in enumerate(lData):
-            try:
-                dTelemetry["rpi_"+str(idx)] = float(val)
-            except ValueError:
-                pass
-        printlog("Sending "+json.dumps(dTelemetry)+"...")
+    # Variable list corresponds to all variables handled by the database
+    lVars = list(scadaDB.vars.keys())
+
+    def send_to_plateform(sLastDateTime, sc):
         try:
-            r = requests.post(dPrm['url'], json = dTelemetry)
-        except requests.exceptions.RequestException as e:
-            printlog("Request post error: " + str(e))
+            sData = scadaDB.getValues(lVars)
+        except Exception as e:
+            log.critical('Wrong parameter (scada.ini->[GATEWAY]/variables) : the variable %s doesn\'t exist' % e)
+            raise SystemExit(1)
+        lData = sData.split(";")
+        s.enter(float(dPrmG['frequency']), 1,
+                send_to_plateform, (lData[0], sc,))
+        if lData[0] != sLastDateTime:
+            lData.pop(0)
+            dTelemetry = {}
+            for idx, val in enumerate(lData):
+                try:
+                    dTelemetry[lVars[idx]] = float(val)
+                except ValueError:
+                    pass
+            log.debug("Sending "+json.dumps(dTelemetry)+"...")
+            try:
+                r = requests.post(dPrmG['url'], json=dTelemetry)
+                log.debug("Request response: " + r.text)
+            except requests.exceptions.RequestException as e:
+                log.error("Request post error: " + str(e))
 
-# MAIN PROGRAM
-s.enter(float(dPrm['frequency']), 1, send_to_plateform, (dPrm, rd, "", s,))
-s.run()
+    # Scheduling
+    import time
+    import sched
+    s = sched.scheduler(time.time, time.sleep)
+    s.enter(float(dPrmG['frequency']), 1, send_to_plateform, ("", s,))
+    s.run()
+
+
+if __name__ == '__main__':
+    from scada_misc import getIniParameters
+    dPrm = getIniParameters("scada.ini")
+    scadaGateway(dPrm)

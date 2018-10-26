@@ -1,32 +1,48 @@
-from printlog import printlog
-
 class HardCom:
-    def __init__(self, bTest = False):
-        self.bTest = bTest
+    def __init__(self, log, dPrmHard):
+        self.log = log
+        self.dPrm = dPrmHard
+        self.bTest = dPrmHard['test']=='1'
         self.bConnected = True
-        if not bTest:
+        if not self.bTest:
             import serial
-            printlog("Connecting to hardware...")
+            log.info("Connecting to hardware...")
             try:
-                self.ser = serial.Serial('/dev/ttyACM0',9600)
+                self.ser = serial.Serial(dPrmHard['port'], dPrmHard['baudrate'])
             except:
-                printlog("ERROR: No connection to hardware")
-                printlog("Check connections and retry")
+                log.error("No connection to hardware: check connections and retry")
                 self.bconnected = False
                 pass
         else:
-            printlog("Testing without connection to hardware")
+            log.info("Testing without connection to hardware")
 
-    def get(self, s):
-        sOut = ""
+    def get(self, lPins):
+        """
+        Return data from hardware
+        @param list of the pins to get
+        @return ordered list of data for each asked pin or string if error
+        """
+        self.log.debug(lPins)
+        # Getting the string from the arduino given all the available data separated by spaces
         if not self.bTest:
             try:
                 self.ser.write(b'1')
-                sOut = self.ser.readline().decode("ISO-8859-1")
+                sArduino = self.ser.readline().decode("ISO-8859-1")
+                self.log.debug('Arduino sent: '+sArduino)
             except IOError as e:
-                printlog("Error: get({}): {}, {}".format(s, e.errno, e.strerror))
-                sOut = "ERROR: reading serial data"
+                self.log.error("HardCom.get Arduino readline: {}, {}".format(e.errno, e.strerror))
+                return "ERROR: reading serial data"
         else:
             from random import random
-            sOut = " ".join(map(str,[int(random()*100) for x in range(0,len(s.split(",")))]))
-        return sOut
+            sArduino = " ".join(map(str,[int(random()*int(self.dPrm['test_maxval'])) for x in range(int(self.dPrm['nb_pins']))]))
+        # Convert to list
+        lAllData = sArduino.split()
+        # Select pins
+        try:
+            self.log.debug(lAllData)
+            lData = [lAllData[i] for i in lPins]
+        except Exception as e:
+            sErr = "HardCom.get data selection: {}".format(e)
+            self.log.error(sErr)
+            return "ERROR: " + sErr
+        return lData

@@ -1,11 +1,9 @@
 import os
-from printlog import printlog
 
 class ReadData:
 
-    def __init__(self, dPrm):
-        self.dPrm = dPrm
-        self.file = open(dPrm['datafile'], 'rb')
+    def __init__(self, sDataPath):
+        self.file = open(sDataPath, 'rb')
 
 
     def newline(self):
@@ -14,13 +12,20 @@ class ReadData:
         else:
             return b"\n"
 
-    def get_last_data(self):
+    def get_last_data(self, bTimeStamp = False):
+        """
+        Returns list of numerical values included in the last line of data.log
+        """
         last_line = self.last_line(ignore_ending_newline=True).decode('utf-8')
         d = last_line.split(";")
-        d.pop(0)
-        return " ".join(d)
+        dOut = [int(s) for s in d[1:]]
+        if bTimeStamp: dOut.insert(0,d[0])
+        return dOut
 
     def last_line(self, block_size=80, ignore_ending_newline=False, newline=False):
+        """
+        Reads last line of data.log
+        """
         if not newline:
             newline = self.newline()
         in_file = self.file
