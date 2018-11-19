@@ -1,0 +1,11 @@
+#!/bin/sh -e
+# Set current directory https://stackoverflow.com/a/246128
+DIR=/home/pi/scada
+
+# Run SCADA services
+python3 "${DIR}/scada_logger.py" >> /var/log/scada/logger.log 2>&1 &
+python3 "${DIR}/scada_server.py" >> /var/log/scada/server.log 2>&1 &
+python3 "${DIR}/scada_gateway.py" >> /var/log/scada/gateway.log 2>&1 &
+python3 "${DIR}/scada_net_datalogger.py" >> /var/log/scada/net_datalogger.log 2>&1 &
+
+exit 0

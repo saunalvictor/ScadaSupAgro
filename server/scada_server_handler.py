@@ -40,14 +40,15 @@ class ScadaHandler:
             'DEL': self.instrDel,
             'GET': self.instrGet,
             'HELP': self.instrHelp,
-            'LIST': self.instrList
+            'LIST': self.instrList,
+            'NET': self.instrNet
         }
         from scada_misc import createLog
         self.dPrm = dPrm
         self.log = createLog(self.dPrm['LOGGER']['level'])
 
-        from scada_var import ScadaDatabase
-        self.scadaDB = ScadaDatabase(self.log, self.dPrm['DATA_LOGGER'])
+        from scada_database import ScadaDatabase
+        self.scadaDB = ScadaDatabase(self.log, self.dPrm)
 
         self.send(self.open())
 
@@ -80,10 +81,11 @@ class ScadaHandler:
             sSend = "ERROR: Instruction '{}' not handled by the server. Type HELP to get the list of available instructions.".format(lRecv[0])
         else:
             bOK = True
-            if sInstruction == "DEF":
+            if sInstruction in ["DEF","NET"] :
+                # Special parsing in "command line style" for getting quoted parameters
                 try:
                     import shlex
-                    lRecv = shlex.split(sRecv) # Command line parsing for DEF instruction
+                    lRecv = shlex.split(sRecv)
                 except ValueError as e:
                     sSend = 'ERROR: ' + str(e)
                     bOK =False
@@ -112,7 +114,7 @@ class ScadaHandler:
         """
         Create or update a variable in the SCADA database
 
-        Usage: DEF variable type description [options]
+        Usage: DEF type variable description [options]
 
         with:
             - type: type of the variable ('ard' for Arduino analog, 'lin' for linear transformation, 'exp' for exponential transformation)
@@ -123,23 +125,29 @@ class ScadaHandler:
         Description of variable types:
             - Arduino analog: 'ard'
                 There is no option to provide.
-                Example: DEF A0 "Analog input for sensor #0" ard
+                Example: DEF ard A0 "Analog input for sensor #0"
             - Linear transformation: 'lin'
                 Use an input variable X and apply a linear transformation with the equation Y = a * X + b
-                The 'options' argument contains 3 arguments in this order:
+                The 'options' group argument contains 3 arguments in this order:
                     - input variable: the variable used for the calculation
                     - coefficient a: the slope of the linear equation
                     - coefficient b: intercpet of the linear equation
-                Example: DEF Y0 "Water depth at sensor #0" lin A0 0.001 -0.002
+                Example: DEF lin Y0 "Water depth at sensor #0" A0 0.001 -0.002
             - Exponential transformation: 'exp'
                 Use an input variable X and apply this equation Y = a * (X - b) ^ c
-                The 'options' argument contains 4 arguments in this order:
+                The 'options' group argument contains 4 arguments in this order:
                     - input variable: the variable used for the calculation
                     - coefficient a
                     - coefficient b
                     - coefficient c
                 Example for getting the discharge using King's triangular weir equation with a sill elevation of 10 cm:
-                    DEF Q0 "Discharge at sensor #0" exp Y0 1.4 0.1 2.5
+                    DEF exp Q0 "Discharge at sensor #0" Y0 1.4 0.1 2.5
+            - Local network device: 'net'
+                The 'options' group argument contains 2 arguments:
+                    - device name: the name of the device
+                    - Order number of the variable on the device from 0 (0 for the first, 1 for the second...)
+                Example for getting the first variable of the device called "TEST_DEVICE":
+                    DEF net FIRST_DATA "The first data provided by the device" TEST_DEVICE 0
         """
         if len(lRecv) < 3:
             return "ERROR: Instruction DEF needs at least 2 parameters. Type HELP DEF for help."
@@ -157,6 +165,69 @@ class ScadaHandler:
             return 'Variable {0} {1}. Type \'LIST {0}\' for viewing details, type \'GET {0}\' for getting real time data!'.format(lRecv[2], sOperation)
         else:
             return sOut
+
+    def instrNet(self, lRecv):
+        """
+        Declare or update a local network device
+
+        Usage: NET device_name description number_of_variables
+
+        With:
+            - device_name: the name of the device (used after for declare a variable with DEF net. See HELP NET)
+            - description: Description of the device for human beings :)
+            - number_of_variables: number of variables provided by the device
+        """
+        if len(lRecv)!=4:
+            return "ERROR: NET instruction needs 3 parameters. Type HELP NET for help."
+        sDevice = lRecv[1]
+        from scada_var_type import ScadaDevice
+        if not ScadaDevice.checkDeviceID(sDevice):
+            return "ERROR: The Device ID should only contains alphanumeric characters or dashes"
+        try:
+            nVar = int(lRecv[3])
+        except Exception as e:
+            return "ERROR: Argument number of variables should be numeric: "+str(e)
+        if not nVar > 0:
+            return "ERROR: Argument number of variables should be positive"
+        sAction = "updated" if sDevice in self.scadaDB.devices.keys() else "created"
+        # Register of the device
+        self.scadaDB.addDevice(ScadaDevice(sDevice, nVar, lRecv[2]))
+        return "Device {} {}".format(sDevice, sAction)
+
+
+    def defType_net(self, lArgs):
+        """
+        Create or update a local network device variable
+        @params lArgs (Description, Device, data index)
+        """
+        # Check arguments number
+        if len(lArgs) != 4:
+            return 'ERROR: 5 arguments are expected'
+        sVar, sDescription, sDevice, sIndex = lArgs
+        # Check if the device exists
+        if not sDevice in self.scadaDB.devices:
+            return "ERROR: The device {} does not exist. Use NET to create it. Type HELP NET for help.".format(sDevice)
+        # Check if the data index is numeric
+        try:
+            nIndex = int(sIndex)
+        except:
+            return "ERROR: The 5th parameter (data index) should be a number between 0 and {:d} for the device {}".format(self.scadaDB.devices[sDevice].n, sDevice)
+        # Check if the data index is in the range of device variables
+        if not(nIndex >= 0 and nIndex < self.scadaDB.devices[sDevice].n):
+            return "ERROR: data index of the device {} should be between 0 and {:d}".format(sDevice, self.scadaDB.devices[sDevice].n)
+        from scada_var_type import ScadaVarNet
+        self.scadaDB.add(
+                ScadaVarNet(
+                    self.scadaDB,
+                    sVar,
+                    options={
+                        'device': sDevice,
+                        'index': nIndex
+                    },
+                    description=sDescription
+                )
+            )
+        return True
 
     def defType_ard(self, lArgs):
         """
@@ -209,23 +280,28 @@ class ScadaHandler:
         """
         Delete a variable from the database
 
-        Usage : DEL variable
+        Usage : DEL [variable or local network device name]
         """
-
         if len(lRecv)!=2:
             return "ERROR: Instruction DEL needs 1 parameter. Type HELP DEF for help."
 
-        sVar = lRecv[1]
-        if not sVar in self.scadaDB.vars.keys() :
-            return "ERROR: Variable '{}' doesn\'t exist. Type LIST to get the list of existing variables.".format(sVar)
+        sId = lRecv[1]
+        if not sId in self.scadaDB.vars.keys() :
+            if self.scadaDB.devices is None or not sId in self.scadaDB.devices.keys():
+                return "ERROR: Variable '{}' doesn\'t exist. Type LIST to get the list of existing variables or local network device.".format(sId)
+            else:
+                self.scadaDB.deleteDevice(sId)
+                return "Device {} deleted".format(sId)
         else:
-            self.scadaDB.delete(sVar)
-            return "Variable {} deleted".format(sVar)
+            self.scadaDB.delete(sId)
+            return "Variable {} deleted".format(sId)
 
 
     def instrList(self, lRecv):
         """
-        List available variables on the SCADA database
+        List available variables and local network device on the SCADA database
+
+        @todo List Local network devices
         """
         if len(lRecv)==1:
             l = ["%s: %s" % (s, self.scadaDB.vars[s].description) for s in self.scadaDB.vars.keys()]
@@ -273,12 +349,3 @@ class ScadaHandler:
             return "\r\n".join([s[indent:] for s in l])
         else:
             return l[0].strip()
-
-    @staticmethod
-    def generate_credentials(length=20):
-        if not isinstance(length, int) or length < 8:
-            raise ValueError("temp password must have positive length")
-
-        chars = "abcdefghjklmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-        from os import urandom
-        return "".join(chars[ord(c) % len(chars)] for c in urandom(length))

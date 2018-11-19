@@ -18,7 +18,7 @@ def getIniParameters(sFile):
     return {s:dict(cfg.items(s)) for s in cfg.sections()}
 
 
-def createLog(sLogLevel, sFormat = '%(asctime)s :: %(levelname)s :: %(message)s', sFileName = "", sLoggerName = __name__):
+def createLog(sLogLevel, sFormat = "", sFileName = "", sLoggerName = __name__):
     """
     Create a log object
     http://sametmax.com/ecrire-des-logs-en-python/
@@ -26,12 +26,21 @@ def createLog(sLogLevel, sFormat = '%(asctime)s :: %(levelname)s :: %(message)s'
     import logging
     # création de l'objet logger qui va nous servir à écrire dans les logs
     log = logging.getLogger(sLoggerName)
+
+    # Check if this logger has already been configured
+    if log.hasHandlers(): log.handlers = []
+
     # on met le niveau du logger à DEBUG, comme ça il écrit tout
     logLevel = logging.getLevelName(sLogLevel.upper())
     log.setLevel(logLevel)
 
     # création d'un formateur qui va ajouter le temps, le niveau
     # de chaque message quand on écrira un message dans le log
+    if sFormat == "":
+        if sLogLevel.upper() == 'DEBUG':
+            sFormat = '%(asctime)s :: %(levelname)s :: %(filename)s:%(lineno)s - %(funcName)s() :: %(message)s'
+        else:
+            sFormat = '%(asctime)s :: %(levelname)s :: %(message)s'
     formatter = logging.Formatter(sFormat)
 
     # création d'un handler qui va rediriger chaque écriture de log

@@ -9,30 +9,29 @@ def scadaGateway(dPrm):
     log = createLog(dPrm['LOGGER']['level'])
     log.info('Starting Scada Gateway')
 
-    from scada_var import ScadaDatabase
-    scadaDB = ScadaDatabase(log, dPrm['DATA_LOGGER'])
+    from scada_database import ScadaDatabase
+    scadaDB = ScadaDatabase(log, dPrm)
 
     # Variable list corresponds to all variables handled by the database
     lVars = list(scadaDB.vars.keys())
 
-    def send_to_plateform(sLastDateTime, sc):
-        try:
-            sData = scadaDB.getValues(lVars)
-        except Exception as e:
-            log.critical('Wrong parameter (scada.ini->[GATEWAY]/variables) : the variable %s doesn\'t exist' % e)
-            raise SystemExit(1)
-        lData = sData.split(";")
-        s.enter(float(dPrmG['frequency']), 1,
-                send_to_plateform, (lData[0], sc,))
-        if lData[0] != sLastDateTime:
-            lData.pop(0)
-            dTelemetry = {}
-            for idx, val in enumerate(lData):
-                try:
-                    dTelemetry[lVars[idx]] = float(val)
-                except ValueError:
-                    pass
-            log.debug("Sending "+json.dumps(dTelemetry)+"...")
+    def send_to_plateform(dLastDateTime, sc):
+        dTelemetry = {}
+        for key in lVars:
+            timestamp = dLastDateTime[key]
+            try:
+                data = scadaDB.get(key)
+                timestamp = scadaDB.getTimeStamp(key)
+            except Exception as e:
+                log.error('Impossible to get variable {}: {}'.format(key,str(e)))
+            except Exception as e:
+                log.error('Retriving TimeStamp: '+str(e))
+            if timestamp != dLastDateTime[key]:
+                dLastDateTime[key] = timestamp
+                dTelemetry[key] = data
+        s.enter(float(dPrmG['frequency']), 1, send_to_plateform, (dLastDateTime, sc,))
+        if len(dTelemetry)>0:
+            log.info("Sending "+json.dumps(dTelemetry)+"...")
             try:
                 r = requests.post(dPrmG['url'], json=dTelemetry)
                 log.debug("Request response: " + r.text)
@@ -43,7 +42,7 @@ def scadaGateway(dPrm):
     import time
     import sched
     s = sched.scheduler(time.time, time.sleep)
-    s.enter(float(dPrmG['frequency']), 1, send_to_plateform, ("", s,))
+    s.enter(float(dPrmG['frequency']), 1, send_to_plateform, ({key:"" for key in lVars}, s,))
     s.run()
 
 
