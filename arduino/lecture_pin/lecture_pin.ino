@@ -1,9 +1,9 @@
-void setup() 
+void setup()
 {
   Serial.begin(9600);
 }
 
-void loop() 
+void loop()
 {
   if(Serial.available())
   {
@@ -12,7 +12,7 @@ void loop()
     if(iRead == 49)
     {
       String s = " ";
-      for (int i = 0; i < 4; i++) 
+      for (int i = 0; i < 12; i++)
       {
         s = s + analogRead(i) + " ";
       }
