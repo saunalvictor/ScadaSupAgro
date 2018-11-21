@@ -7,7 +7,7 @@ outputs
 .*cache
 python.bat
 *.yaml
-/clients/python/TES_Client.ini
+*.ini
 /clients/python/TES_*.txt
 /clients/scilab/calibration*.txt
 /clients/scilab/conf_user.sce
