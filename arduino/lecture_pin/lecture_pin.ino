@@ -1,3 +1,5 @@
+const int nb_pins = 12; // Number of pins to read
+
 void setup()
 {
   Serial.begin(9600);
@@ -12,7 +14,7 @@ void loop()
     if(iRead == 49)
     {
       String s = " ";
-      for (int i = 0; i < 12; i++)
+      for (int i = 0; i < nb_pins; i++)
       {
         s = s + analogRead(i) + " ";
       }
