@@ -19,6 +19,8 @@ class ScadaDatabase:
         self.devices = {}
         self.log = log
         self.lastData = {'timestamp': 0, 'data': []}
+        import re
+        self.lPins = [s for s in filter(None, re.split("[,;\t ]+",self.dPrmDL['pins']))]
         from scada_var_readers import LoggerReader
         try:
             self.rd = LoggerReader(self.dPrmDL['file'])
@@ -135,9 +137,8 @@ class ScadaDatabase:
         """
         self.vars = {}
         self.devices = {}
-        import re
-        lPins = [s for s in filter(None, re.split("[,;\t ]+",self.dPrmDL['pins']))]
-        for sPin in lPins:
+        
+        for sPin in self.lPins:
             self.add(ScadaVarArd(self, "A"+sPin, description="Arduino data on analog pin #%s" % (sPin)), False)
 
     def add(self, scadaVar, bLoad = True):
@@ -193,7 +194,7 @@ class ScadaDatabase:
             self.lastData = {'timestamp': time.time(), 'data': lD}
         else:
             lD = self.lastData['data']
-        return lD[number + 1]
+        return lD[self.lPins.index(str(number)) + 1]
 
     def getDeviceFromToken(self, token):
         """

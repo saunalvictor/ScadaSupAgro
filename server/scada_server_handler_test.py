@@ -1,5 +1,5 @@
-from scada_var_test import dPrm
-
+from scada_var_test import get_dPrm
+dPrm = get_dPrm()
 dPrm['LOGGER']={'level': 'DEBUG'}
 
 class TestScadaHandler():

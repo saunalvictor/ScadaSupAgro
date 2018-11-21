@@ -2,14 +2,15 @@ from scada_database import ScadaDatabase, ScadaVarArd, ScadaVarLin, ScadaVarExp
 
 from scada_misc import createLog
 
-dPrm = {
+def get_dPrm():
+    return {
     'DATA_LOGGER': {
         'file': 'data.log',
         'pins': '0,1',
         'freq': '0.5'
     },
     'NET_DATA_LOGGER': {
-        'file': 'netdata_{}.log',
+        'file': 'network_data_{}.log',
     },
     'DATABASE': {
         'file': 'scada_logger.yaml',
@@ -17,7 +18,8 @@ dPrm = {
 }
 
 class TestScadaDatabase:
-    def init(self):
+    def init(self, dPrm = {}):
+        if dPrm == {}: dPrm = get_dPrm()
         # Writing data.log
         from scada_logger_test import TestScadaLogger
         tsl = TestScadaLogger()
@@ -55,6 +57,13 @@ class TestScadaDatabase:
     def test_getAnalogic(self):
         scadaDB = self.init()
         d = scadaDB.get('A0')
+        assert d > 0 and d < 1024
+
+    def test_getAnalogic_non_contiguous(self):
+        dPrm = get_dPrm()
+        dPrm['DATA_LOGGER']['pins'] = '0,2'
+        scadaDB = self.init(dPrm)
+        d = scadaDB.get('A2')
         assert d > 0 and d < 1024
 
     def test_varLin(self):
