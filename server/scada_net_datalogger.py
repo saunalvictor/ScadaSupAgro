@@ -62,7 +62,7 @@ class NetDeviceHandler:
 
 def scadaNetDataLogger(dPrm):
     from scada_misc import createLog
-    log = createLog(dPrm['LOGGER']['level'])
+    log = createLog(dPrm['NET_DATA_LOGGER']['log_level'])
     log.info("Starting scada wifi data logger...")
 
     hostName = ""
