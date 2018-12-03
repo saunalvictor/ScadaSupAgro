@@ -1,6 +1,6 @@
 import socketserver
 
-class MyTCPHandler(socketserver.BaseRequestHandler):
+class ScadaTCPRequestHandler(socketserver.BaseRequestHandler):
     """
     The RequestHandler class for our server.
 
@@ -28,7 +28,6 @@ class MyTCPHandler(socketserver.BaseRequestHandler):
             scada.exec(sRecv)
         scada.log.info("Connection ended with %s" % self.client_address[0])
 
-
 class ScadaHandler:
     def __init__(self, tcpHandler, dPrm):
         self.tcpHandler = tcpHandler
@@ -38,10 +37,12 @@ class ScadaHandler:
             'CLOSE': self.instrClose,
             'DEF': self.instrDef,
             'DEL': self.instrDel,
+            'EXIT': self.instrClose,
             'GET': self.instrGet,
             'HELP': self.instrHelp,
             'LIST': self.instrList,
-            'NET': self.instrNet
+            'NET': self.instrNet,
+            'QUIT': self.instrClose
         }
         from scada_misc import createLog
         self.dPrm = dPrm
@@ -242,7 +243,7 @@ class ScadaHandler:
         if len(lArgs) == 2:
             sDescription = lArgs[1]
         else:
-            sDescription = "Arduino data on analog pin #%s".format(lArgs[0][1:])
+            sDescription = "Arduino data on analog pin #{}".format(lArgs[0][1:])
         from scada_var_type import ScadaVarArd
         try:
             self.scadaDB.add(ScadaVarArd(self.scadaDB, lArgs[0], description=sDescription))
@@ -341,7 +342,6 @@ class ScadaHandler:
 
     @staticmethod
     def getFunctionDoc(func, bFull = False):
-        from scada_misc import scadaParse
         l = func.__doc__.splitlines()
         if l[0].strip() == "": del l[0]
         indent = len(l[0]) - len(l[0].lstrip(' '))
