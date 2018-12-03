@@ -51,16 +51,16 @@ class ScadaLogger():
         if bOK: self.dataLog.info(";".join(lData))
 
     def loop_measurement(self):
-        self.nb_loop -= 1
-        if self.nb_loop == -1: return
         self.setloop(float(self.dPrmDL['freq']))
         self.do_measurement()
 
     def setloop(self, delay):
         self.s.enter(delay, 1, self.loop_measurement)
 
-    def run(self, nb_loop=-1):
-        self.nb_loop = nb_loop
+    def run(self):
+        """
+        Run the Gateway
+        """
         self.setloop(float(self.dPrmDL['freq']))
         self.s.run()
 

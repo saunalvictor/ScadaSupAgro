@@ -46,7 +46,7 @@ class ScadaVarArd(ScadaVar):
 
     def get(self):
         d = self.database.getAnalogic(int(self.name[1:]))
-        self.timestamp = self.database.lastData['timestamp']
+        self.timestamp = self.database.lastData['data'][0]
         self.database.log.debug('ScadaVarArd.get({})={}'.format(self.name,str(d)))
         return d
 
