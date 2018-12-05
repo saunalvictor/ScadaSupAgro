@@ -125,16 +125,16 @@ class ScadaHandler:
         - description: a description of the variable (use quotes for more than one word)
         - options: depends on the type of variable to define (see below)
 
-        ### Description of variable types:
-        
+        ### Description of variable types:
+
         #### Arduino analog: 'ard'
-        
+
         There is no option to provide.
 
         Example:
 
             DEF ard A0 "Analog input for sensor #0"
-        
+
         #### Linear transformation: 'lin'
 
         Use an input variable X and apply a linear transformation with the equation `Y = a * X + b`
@@ -144,11 +144,11 @@ class ScadaHandler:
         - input variable X: the variable used for the calculation
         - coefficient a: slope of the linear equation
         - coefficient b: intercept of the linear equation
-        
+
         Example:
-        
+
             DEF lin Y0 "Water depth at sensor #0" A0 0.001 -0.002
-        
+
         #### Exponential transformation: 'exp'
 
         Use an input variable X and apply this equation `Y = a * (X - b) ^ c`
@@ -163,7 +163,7 @@ class ScadaHandler:
         Example for getting the discharge in l/s using King's triangular weir equation with a sill elevation of 10 cm:
 
             DEF exp Q0 "Discharge at sensor #0" Y0 0.014 10 2.5
-        
+
         #### Local network device: 'net'
 
         The 'options' group argument contains 2 arguments:
@@ -200,7 +200,7 @@ class ScadaHandler:
 
         With:
 
-            - device_name: the name of the device (used after for declare a variable with DEF net. See HELP NET)
+            - device_name: the name of the device (used after for declaring a variable with DEF net. See HELP DEF.)
             - description: Description of the device for human beings :)
             - number_of_variables: number of variables provided by the device
 
@@ -334,16 +334,16 @@ class ScadaHandler:
         Usage:
 
         - `LIST`: list available variables and devices
-        - `LIST [variable or device id]`: display details on a variable or a device
+        - `LIST [variable or device name]`: display details on a variable or a device
         """
         if len(lRecv)==1:
             lDevices = ["%s: %s" % (s, self.scadaDB.devices[s].description) for s in self.scadaDB.devices.keys()]
             lVariables = ["%s: %s" % (s, self.scadaDB.vars[s].description) for s in self.scadaDB.vars.keys()]
             l = []
-            if(len(lDevices)>0): 
+            if(len(lDevices)>0):
                 l.append("# Devices:")
                 l.extend(lDevices)
-            if(len(lVariables)>0): 
+            if(len(lVariables)>0):
                 l.append("# Variables:")
                 l.extend(lVariables)
             return "\r\n".join(l)
@@ -394,11 +394,11 @@ class ScadaHandler:
         return "Connection closed by the user"
 
     @staticmethod
-    def getFunctionDoc(func, bFull = False):
+    def getFunctionDoc(func, bFull = False, newline = "\r\n"):
         l = func.__doc__.splitlines()
         if l[0].strip() == "": del l[0]
         indent = len(l[0]) - len(l[0].lstrip(' '))
         if bFull:
-            return "\r\n".join([s[indent:] for s in l])
+            return newline.join([s[indent:] for s in l])
         else:
             return l[0].strip()

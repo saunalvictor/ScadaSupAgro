@@ -1,5 +1,4 @@
-How to modify the pins used on the Leonardo
-===========================================
+# How to modify the pins used on the Leonardo
 
 The pins used should be from the pin `A0` to the pin `An` with n is equal to the number of pins used - 1.
 
@@ -13,16 +12,15 @@ On the Leonardo board, analog input are identified as this:
 - A10 on pin DIGITAL PWM 10
 - A11 on pin DIGITAL PWM 12
 
-See Leonardo documentation for details (https://www.arduino.cc/en/Main/Arduino_BoardLeonardo#documentation).
+See Leonardo documentation for details (<https://www.arduino.cc/en/Main/Arduino_BoardLeonardo#documentation>).
 
 
-Update of the Arduino script
-----------------------------
+## Update of the Arduino script
 
-Check the reading script on the Leonardo (https://github.com/DDorch/Scada_DDorch/blob/master/arduino/lecture_pin/lecture_pin.ino) and modify the parameter `nb_pins` in the first line of the script to the number of pins to listen.
+Check the reading script on the Leonardo (<https://github.com/DDorch/Scada_DDorch/blob/master/arduino/lecture_pin/lecture_pin.ino>) and modify the parameter `nb_pins` in the first line of the script to the number of pins to listen.
 
-Configure the arduino data logger of the scada
-----------------------------------------------
+
+## Configure the arduino data logger of the scada
 
 Edit the file `/home/pi/scada/scada.ini`
 
@@ -38,8 +36,7 @@ valuemin=60
 pins=0,1,2,3,4,5,6,7,8,9,10,11
 ```
 
-Configuration on Canal Riquet
------------------------------
+## Configuration on Canal Riquet
 
 The pins of the Leonardo Arduino are connected to the sensors figuring on the scheme below:
 
