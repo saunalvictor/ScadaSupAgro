@@ -1,0 +1,637 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>ThingsBoard installation - SCADA Halle hydraulique SupAgro</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.451f80e5.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../../#thingsboard-installation" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="SCADA Halle hydraulique SupAgro" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                SCADA Halle hydraulique SupAgro
+              </span>
+              <span class="md-header-nav__topic">
+                ThingsBoard installation
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../.." title="SCADA Halle hydraulique SupAgro" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    SCADA Halle hydraulique SupAgro
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Supervisory Control And Data Acquisition (SCADA) at the hydraulic hall of Montpellier SupAgro" class="md-nav__link">
+      Supervisory Control And Data Acquisition (SCADA) at the hydraulic hall of Montpellier SupAgro
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../development_requirements/" title="Development requirements" class="md-nav__link">
+      Development requirements
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../network_devices/" title="Local network devices" class="md-nav__link">
+      Local network devices
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4" checked>
+    
+    <label class="md-nav__link" for="nav-4">
+      Installation
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Installation
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../00-SCADA_services/" title="Installation of SCADA services on the Raspberry PI" class="md-nav__link">
+      Installation of SCADA services on the Raspberry PI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        ThingsBoard installation
+      </label>
+    
+    <a href="./" title="ThingsBoard installation" class="md-nav__link md-nav__link--active">
+      ThingsBoard installation
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#external-database-installation" title="External database installation" class="md-nav__link">
+    External database installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-of-thingsboard" title="Installation of thingsBoard" class="md-nav__link">
+    Installation of thingsBoard
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-de-pgadmin-aborted" title="Installation de pgAdmin (aborted)" class="md-nav__link">
+    Installation de pgAdmin (aborted)
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Raspberry PI
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Raspberry PI
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Raspberry_PI/ssh/" title="Controlling the Raspberry PI" class="md-nav__link">
+      Controlling the Raspberry PI
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      SCADA server
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        SCADA server
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../SCADA_server/connection/" title="Connection to SCADA server" class="md-nav__link">
+      Connection to SCADA server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../SCADA_server/protocol/" title="SCADA server protocol" class="md-nav__link">
+      SCADA server protocol
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      How to
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        How to
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../how_to/modify_arduino_pins/" title="How to modify the pins used on the Leonardo" class="md-nav__link">
+      How to modify the pins used on the Leonardo
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#external-database-installation" title="External database installation" class="md-nav__link">
+    External database installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-of-thingsboard" title="Installation of thingsBoard" class="md-nav__link">
+    Installation of thingsBoard
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#installation-de-pgadmin-aborted" title="Installation de pgAdmin (aborted)" class="md-nav__link">
+    Installation de pgAdmin (aborted)
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="thingsboard-installation">ThingsBoard installation</h1>
+<p>The Thingsboard IoT platform (<a href="https://thingsboard.io">https://thingsboard.io</a>) has been installed on a Debian 9 Linux OS.</p>
+<p>The following installation steps are based on documentation: <a href="https://thingsboard.io/docs/user-guide/install/linux/">https://thingsboard.io/docs/user-guide/install/linux/</a></p>
+<h2 id="external-database-installation">External database installation</h2>
+<p>We chose to use postgreSQL which seems to require less memory than Cassandra the other database supported by ThingsBoard.</p>
+<p>For installing and running postgreSQL:</p>
+<pre><code>sudo apt-get update
+sudo apt-get install postgresql postgresql-contrib
+sudo service postgresql start
+</code></pre>
+<p>Create user and database for thingsboard:</p>
+<pre><code>$ sudo -u postgres createuser --interactive
+Saisir le nom du rôle à ajouter : thingsboard
+Le nouveau rôle est-il super-utilisateur ? (o/n) n
+Le nouveau rôle est-il autorisé à créer des bases de données ? (o/n) n
+Le nouveau rôle est-il autorisé à créer de nouveaux rôles ? (o/n) n
+$ sudo -u postgres createdb thingsboard
+</code></pre>
+<p>Add a password for user thingsboard (<a href="https://blog.2ndquadrant.com/how-to-safely-change-the-postgres-user-password-via-psql/">https://blog.2ndquadrant.com/how-to-safely-change-the-postgres-user-password-via-psql/</a>):</p>
+<pre><code>$ sudo -u thingsboard psql
+thingsboard=&gt; \password
+Saisissez le nouveau mot de passe :
+Saisissez-le à nouveau :
+thingsboard=&gt; \q
+</code></pre>
+<p>Grant privileges for the user thingsboard (<a href="https://stackoverflow.com/a/22486012">https://stackoverflow.com/a/22486012</a>):</p>
+<pre><code>$ sudo -u postgres psql
+postgres=# GRANT CONNECT ON DATABASE thingsboard TO thingsboard;
+GRANT
+postgres=# GRANT USAGE ON SCHEMA public TO thingsboard;
+GRANT
+postgres=# GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO thingsboard;
+GRANT
+postgres=# GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO thingsboard;
+GRANT
+postgres=# \q
+</code></pre>
+<h2 id="installation-of-thingsboard">Installation of thingsBoard</h2>
+<p>Search the link for the last version of thingsboard here: <a href="https://github.com/thingsboard/thingsboard/releases">https://github.com/thingsboard/thingsboard/releases</a></p>
+<p>Installation steps with version 2.2:</p>
+<pre><code>cd /tmp
+wget https://github.com/thingsboard/thingsboard/releases/download/v2.2/thingsboard-2.2.deb
+sudo dpkg -i thingsboard-2.2.deb
+sudo /usr/share/thingsboard/bin/install/install.sh
+</code></pre>
+<p>Edit configuration file:</p>
+<pre><code>sudo nano /etc/thingsboard/conf/thingsboard.yml
+</code></pre>
+<p>Follow instructions at <a href="https://thingsboard.io/docs/user-guide/install/linux/">https://thingsboard.io/docs/user-guide/install/linux/</a>.
+On our server, the port has been modified from 8080 to 8082 (8080 and 8081 are already used by other servers).</p>
+<p>Then start service:</p>
+<pre><code>sudo service thingsboard start
+</code></pre>
+<h2 id="installation-de-pgadmin-aborted">Installation de pgAdmin (aborted)</h2>
+<p>Follow instructions here: <a href="https://wiki.postgresql.org/wiki/Apt">https://wiki.postgresql.org/wiki/Apt</a></p>
+<p>For installation in server mode (<a href="https://www.pgadmin.org/docs/pgadmin4/3.x/server_deployment.html">https://www.pgadmin.org/docs/pgadmin4/3.x/server_deployment.html</a>):</p>
+<pre><code>sudo mkdir /var/log/pgadmin
+sudo chown www-data:www-data /var/log/pgadmin
+sudo mkdir /var/lib/pgadmin
+sudo chown www-data:www-data /var/lib/pgadmin
+sudo apt-get install python-flask python-pip
+sudo python -m pip install flask-babelex
+sudo python -m pip install flask-login
+sudo python -m pip install flask-mail
+sudo python -m pip install flask-paranoid
+sudo python -m pip install flask-security
+sudo python -m pip install flask-sqlalchemy
+sudo python -m pip install dateutil
+sudo python -m pip install flask_migrate
+sudo apt-get install python-psycopg2
+</code></pre>
+<p>Aborted after missing dependency "backports" which I was enable to find. It seems that another way of installation is approved: <a href="https://stackoverflow.com/a/41260478">https://stackoverflow.com/a/41260478</a></p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../00-SCADA_services/" title="Installation of SCADA services on the Raspberry PI" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Installation of SCADA services on the Raspberry PI
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../../Raspberry_PI/ssh/" title="Controlling the Raspberry PI" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Controlling the Raspberry PI
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            CC BY-NC-ND, Irstea 2018
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>

@@ -1,0 +1,854 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>SCADA server protocol - SCADA Halle hydraulique SupAgro</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.451f80e5.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../../#scada-server-protocol" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="SCADA Halle hydraulique SupAgro" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                SCADA Halle hydraulique SupAgro
+              </span>
+              <span class="md-header-nav__topic">
+                SCADA server protocol
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../.." title="SCADA Halle hydraulique SupAgro" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    SCADA Halle hydraulique SupAgro
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Supervisory Control And Data Acquisition (SCADA) at the hydraulic hall of Montpellier SupAgro" class="md-nav__link">
+      Supervisory Control And Data Acquisition (SCADA) at the hydraulic hall of Montpellier SupAgro
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../development_requirements/" title="Development requirements" class="md-nav__link">
+      Development requirements
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../network_devices/" title="Local network devices" class="md-nav__link">
+      Local network devices
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Installation
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Installation
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Installation/00-SCADA_services/" title="Installation of SCADA services on the Raspberry PI" class="md-nav__link">
+      Installation of SCADA services on the Raspberry PI
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Installation/03-thingsboard/" title="ThingsBoard installation" class="md-nav__link">
+      ThingsBoard installation
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Raspberry PI
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Raspberry PI
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../Raspberry_PI/ssh/" title="Controlling the Raspberry PI" class="md-nav__link">
+      Controlling the Raspberry PI
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6" checked>
+    
+    <label class="md-nav__link" for="nav-6">
+      SCADA server
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        SCADA server
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../connection/" title="Connection to SCADA server" class="md-nav__link">
+      Connection to SCADA server
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        SCADA server protocol
+      </label>
+    
+    <a href="./" title="SCADA server protocol" class="md-nav__link md-nav__link--active">
+      SCADA server protocol
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-available-instructions" title="List of available instructions" class="md-nav__link">
+    List of available instructions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-close" title="Instruction CLOSE" class="md-nav__link">
+    Instruction CLOSE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-def" title="Instruction DEF" class="md-nav__link">
+    Instruction DEF
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description-of-variable-types" title="Description of variable types:" class="md-nav__link">
+    Description of variable types:
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arduino-analog-ard" title="Arduino analog: 'ard'" class="md-nav__link">
+    Arduino analog: 'ard'
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linear-transformation-lin" title="Linear transformation: 'lin'" class="md-nav__link">
+    Linear transformation: 'lin'
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponential-transformation-exp" title="Exponential transformation: 'exp'" class="md-nav__link">
+    Exponential transformation: 'exp'
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-network-device-net" title="Local network device: 'net'" class="md-nav__link">
+    Local network device: 'net'
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-del" title="Instruction DEL" class="md-nav__link">
+    Instruction DEL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-exit" title="Instruction EXIT" class="md-nav__link">
+    Instruction EXIT
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-get" title="Instruction GET" class="md-nav__link">
+    Instruction GET
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-help" title="Instruction HELP" class="md-nav__link">
+    Instruction HELP
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-list" title="Instruction LIST" class="md-nav__link">
+    Instruction LIST
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-net" title="Instruction NET" class="md-nav__link">
+    Instruction NET
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-quit" title="Instruction QUIT" class="md-nav__link">
+    Instruction QUIT
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      How to
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        How to
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../how_to/modify_arduino_pins/" title="How to modify the pins used on the Leonardo" class="md-nav__link">
+      How to modify the pins used on the Leonardo
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#list-of-available-instructions" title="List of available instructions" class="md-nav__link">
+    List of available instructions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-close" title="Instruction CLOSE" class="md-nav__link">
+    Instruction CLOSE
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-def" title="Instruction DEF" class="md-nav__link">
+    Instruction DEF
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#description-of-variable-types" title="Description of variable types:" class="md-nav__link">
+    Description of variable types:
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#arduino-analog-ard" title="Arduino analog: 'ard'" class="md-nav__link">
+    Arduino analog: 'ard'
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#linear-transformation-lin" title="Linear transformation: 'lin'" class="md-nav__link">
+    Linear transformation: 'lin'
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponential-transformation-exp" title="Exponential transformation: 'exp'" class="md-nav__link">
+    Exponential transformation: 'exp'
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-network-device-net" title="Local network device: 'net'" class="md-nav__link">
+    Local network device: 'net'
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-del" title="Instruction DEL" class="md-nav__link">
+    Instruction DEL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-exit" title="Instruction EXIT" class="md-nav__link">
+    Instruction EXIT
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-get" title="Instruction GET" class="md-nav__link">
+    Instruction GET
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-help" title="Instruction HELP" class="md-nav__link">
+    Instruction HELP
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-list" title="Instruction LIST" class="md-nav__link">
+    Instruction LIST
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-net" title="Instruction NET" class="md-nav__link">
+    Instruction NET
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instruction-quit" title="Instruction QUIT" class="md-nav__link">
+    Instruction QUIT
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="scada-server-protocol">SCADA server protocol</h1>
+<h2 id="list-of-available-instructions">List of available instructions</h2>
+<ul>
+<li>CLOSE: Gracefully close the socket connection with the server</li>
+<li>DEF: Create or update a variable in the SCADA database</li>
+<li>DEL: Delete a variable from the database</li>
+<li>EXIT: Gracefully close the socket connection with the server</li>
+<li>GET: Return list of data from the scada logger with record date in UTC and data values separated by semi-colon</li>
+<li>HELP: Display help on the available instructions</li>
+<li>LIST: List available variables and local network devices on the SCADA database</li>
+<li>NET: Declare or update a local network device</li>
+<li>QUIT: Gracefully close the socket connection with the server</li>
+</ul>
+<h2 id="instruction-close">Instruction CLOSE</h2>
+<p>Gracefully close the socket connection with the server</p>
+<h2 id="instruction-def">Instruction DEF</h2>
+<p>Create or update a variable in the SCADA database</p>
+<p>Usage: <code>DEF type variable description [options]</code></p>
+<p>with:</p>
+<ul>
+<li>type: type of the variable ('ard' for Arduino analog, 'lin' for linear transformation, 'exp' for exponential transformation)</li>
+<li>variable: the name of the variable to create/update</li>
+<li>description: a description of the variable (use quotes for more than one word)</li>
+<li>options: depends on the type of variable to define (see below)</li>
+</ul>
+<h3 id="description-of-variable-types">Description of variable types:</h3>
+<h4 id="arduino-analog-ard">Arduino analog: 'ard'</h4>
+<p>There is no option to provide.</p>
+<p>Example:</p>
+<pre><code>DEF ard A0 "Analog input for sensor #0"
+</code></pre>
+<h4 id="linear-transformation-lin">Linear transformation: 'lin'</h4>
+<p>Use an input variable X and apply a linear transformation with the equation <code>Y = a * X + b</code></p>
+<p>The 'options' group argument contains 3 arguments in this order:</p>
+<ul>
+<li>input variable X: the variable used for the calculation</li>
+<li>coefficient a: slope of the linear equation</li>
+<li>coefficient b: intercept of the linear equation</li>
+</ul>
+<p>Example:</p>
+<pre><code>DEF lin Y0 "Water depth at sensor #0" A0 0.001 -0.002
+</code></pre>
+<h4 id="exponential-transformation-exp">Exponential transformation: 'exp'</h4>
+<p>Use an input variable X and apply this equation <code>Y = a * (X - b) ^ c</code></p>
+<p>The 'options' group argument contains 4 arguments in this order:</p>
+<ul>
+<li>input variable: the variable used for the calculation</li>
+<li>coefficient a</li>
+<li>coefficient b</li>
+<li>coefficient c</li>
+</ul>
+<p>Example for getting the discharge in l/s using King's triangular weir equation with a sill elevation of 10 cm:</p>
+<pre><code>DEF exp Q0 "Discharge at sensor #0" Y0 0.014 10 2.5
+</code></pre>
+<h4 id="local-network-device-net">Local network device: 'net'</h4>
+<p>The 'options' group argument contains 2 arguments:</p>
+<ul>
+<li>device name: the name of the device</li>
+<li>Order number of the variable on the device from 0 (0 for the first, 1 for the second...)</li>
+</ul>
+<p>Example for getting the first variable of the device called "TEST_DEVICE":</p>
+<pre><code>DEF net FIRST_DATA "The first data provided by the device" TEST_DEVICE 0
+</code></pre>
+<h2 id="instruction-del">Instruction DEL</h2>
+<p>Delete a variable from the database</p>
+<p>Usage : <code>DEL [variable or local network device name]</code></p>
+<h2 id="instruction-exit">Instruction EXIT</h2>
+<p>Gracefully close the socket connection with the server</p>
+<h2 id="instruction-get">Instruction GET</h2>
+<p>Return list of data from the scada logger with record date in UTC and data values separated by semi-colon</p>
+<p>Usage: <code>GET var1,var2</code></p>
+<p>Example: <code>GET R0,R1</code> returns <code>2018-10-22 11:50:53,092;58</code></p>
+<h2 id="instruction-help">Instruction HELP</h2>
+<p>Display help on the available instructions</p>
+<p>Usage:</p>
+<ul>
+<li><code>HELP</code>: list of available instructions</li>
+<li><code>HELP [instruction]</code>: Documentation of an instruction</li>
+</ul>
+<h2 id="instruction-list">Instruction LIST</h2>
+<p>List available variables and local network devices on the SCADA database</p>
+<p>Usage:</p>
+<ul>
+<li><code>LIST</code>: list available variables and devices</li>
+<li><code>LIST [variable or device name]</code>: display details on a variable or a device</li>
+</ul>
+<h2 id="instruction-net">Instruction NET</h2>
+<p>Declare or update a local network device</p>
+<p>Usage: <code>NET device_name description number_of_variables</code></p>
+<p>With:</p>
+<pre><code>- device_name: the name of the device (used after for declaring a variable with DEF net. See HELP DEF.)
+- description: Description of the device for human beings :)
+- number_of_variables: number of variables provided by the device
+</code></pre>
+<p>To define variables linked to the device, use the instruction <code>DEF net...</code></p>
+<h2 id="instruction-quit">Instruction QUIT</h2>
+<p>Gracefully close the socket connection with the server</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../connection/" title="Connection to SCADA server" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Connection to SCADA server
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../../how_to/modify_arduino_pins/" title="How to modify the pins used on the Leonardo" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                How to modify the pins used on the Leonardo
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            CC BY-NC-ND, Irstea 2018
+          </div>
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>

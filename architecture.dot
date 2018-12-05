@@ -1,0 +1,42 @@
+digraph scada_architecture {
+	rankdir="LR"
+
+	graph [fontname = "helvetica"];
+ 	node [fontname = "helvetica"];
+ 	edge [fontname = "helvetica"];
+
+	subgraph cluster_1 {
+		node [style=filled];
+		thingsboard [label="ThingsBoard\nhttp://scada.g-eau.net"];
+		fontsize = 24;
+		label = "UMR G-EAU - Lavalette";
+		color=blue
+	}
+
+	subgraph cluster_0 {
+		style=filled;
+		color=lightgrey;
+		node [style=filled,color=white, shape=square];
+		edge [dir="both"]
+        WS [label=<<TABLE><TR><TD>WiFi device</TD></TR><TR><TD><IMG SRC="wifi_device.png"/></TD></TR></TABLE>>]
+        WS -> RPI [label="RPI-AP\nWiFi"]
+
+		SSC [label=<<TABLE><TR><TD>SCADA server client</TD></TR><TR><TD><IMG SRC="scada_server_client.png"/></TD></TR></TABLE>>]
+		SSC -> RPI [label="SupAgro\nlocal\nnetwork"];
+		RPI -> SSC
+		{rank = same; WS; SSC;}
+        RPI [label=<<TABLE><TR><TD>Raspberry PI</TD></TR><TR><TD><IMG SRC="RaspberryPi_Logo.png"/></TD></TR></TABLE>>]
+        PS [label=<<TABLE><TR><TD>Pressure sensors</TD></TR><TR><TD><IMG SRC="canal_riquet_sensors.png"/></TD></TR></TABLE>>]
+        Arduino [label=<<TABLE><TR><TD>Arduino Leonardo</TD></TR><TR><TD><IMG SRC="arduino_leonardo.png"/></TD></TR></TABLE>>]
+		fontsize = 24;
+		label = "Hydraulic hall at Montpellier SupAgro";
+        RPI -> Arduino [label="USB"]
+        Arduino -> PS
+		{rank = same; Arduino; PS;}
+
+	}
+
+    RPI -> thingsboard [label="Internet"]
+	client [style=filled,color=cornflowerblue, shape=box,label=<<TABLE><TR><TD>End user<br/>somewhere in the World</TD></TR><TR><TD><IMG SRC="thingsboard_client.png"/></TD></TR></TABLE>>]
+	client -> thingsboard
+}
