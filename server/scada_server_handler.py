@@ -76,6 +76,7 @@ class ScadaHandler:
     def exec(self, sRecv):
         from scada_misc import scadaParse
         lRecv = scadaParse(sRecv) # Parsing with wide choice of separators
+        if len(lRecv) == 0: return ""
         sInstruction = lRecv[0].upper()
 
         if not sInstruction in self.instructionSet.keys():
@@ -99,9 +100,9 @@ class ScadaHandler:
         """
         Return list of data from the scada logger with record date in UTC and data values separated by semi-colon
 
-        Usage: GET var1,var2
+        Usage: `GET var1,var2`
 
-        Example: 'GET R0,R1' returns '2018-10-22 11:50:53,092;58'
+        Example: `GET R0,R1` returns `2018-10-22 11:50:53,092;58`
         """
         if len(lRecv) > 1:
             try:
@@ -115,40 +116,64 @@ class ScadaHandler:
         """
         Create or update a variable in the SCADA database
 
-        Usage: DEF type variable description [options]
+        Usage: `DEF type variable description [options]`
 
         with:
-            - type: type of the variable ('ard' for Arduino analog, 'lin' for linear transformation, 'exp' for exponential transformation)
-            - variable: the name of the variable to create/update
-            - description: a description of the variable (use quotes for more than one word)
-            - options: depends on the type of variable to define (see below)
 
-        Description of variable types:
-            - Arduino analog: 'ard'
-                There is no option to provide.
-                Example: DEF ard A0 "Analog input for sensor #0"
-            - Linear transformation: 'lin'
-                Use an input variable X and apply a linear transformation with the equation Y = a * X + b
-                The 'options' group argument contains 3 arguments in this order:
-                    - input variable: the variable used for the calculation
-                    - coefficient a: the slope of the linear equation
-                    - coefficient b: intercpet of the linear equation
-                Example: DEF lin Y0 "Water depth at sensor #0" A0 0.001 -0.002
-            - Exponential transformation: 'exp'
-                Use an input variable X and apply this equation Y = a * (X - b) ^ c
-                The 'options' group argument contains 4 arguments in this order:
-                    - input variable: the variable used for the calculation
-                    - coefficient a
-                    - coefficient b
-                    - coefficient c
-                Example for getting the discharge using King's triangular weir equation with a sill elevation of 10 cm:
-                    DEF exp Q0 "Discharge at sensor #0" Y0 1.4 0.1 2.5
-            - Local network device: 'net'
-                The 'options' group argument contains 2 arguments:
-                    - device name: the name of the device
-                    - Order number of the variable on the device from 0 (0 for the first, 1 for the second...)
-                Example for getting the first variable of the device called "TEST_DEVICE":
-                    DEF net FIRST_DATA "The first data provided by the device" TEST_DEVICE 0
+        - type: type of the variable ('ard' for Arduino analog, 'lin' for linear transformation, 'exp' for exponential transformation)
+        - variable: the name of the variable to create/update
+        - description: a description of the variable (use quotes for more than one word)
+        - options: depends on the type of variable to define (see below)
+
+        ### Description of variable types:
+        
+        #### Arduino analog: 'ard'
+        
+        There is no option to provide.
+
+        Example:
+
+            DEF ard A0 "Analog input for sensor #0"
+        
+        #### Linear transformation: 'lin'
+
+        Use an input variable X and apply a linear transformation with the equation `Y = a * X + b`
+
+        The 'options' group argument contains 3 arguments in this order:
+
+        - input variable X: the variable used for the calculation
+        - coefficient a: slope of the linear equation
+        - coefficient b: intercept of the linear equation
+        
+        Example:
+        
+            DEF lin Y0 "Water depth at sensor #0" A0 0.001 -0.002
+        
+        #### Exponential transformation: 'exp'
+
+        Use an input variable X and apply this equation `Y = a * (X - b) ^ c`
+
+        The 'options' group argument contains 4 arguments in this order:
+
+        - input variable: the variable used for the calculation
+        - coefficient a
+        - coefficient b
+        - coefficient c
+
+        Example for getting the discharge in l/s using King's triangular weir equation with a sill elevation of 10 cm:
+
+            DEF exp Q0 "Discharge at sensor #0" Y0 0.014 10 2.5
+        
+        #### Local network device: 'net'
+
+        The 'options' group argument contains 2 arguments:
+
+        - device name: the name of the device
+        - Order number of the variable on the device from 0 (0 for the first, 1 for the second...)
+
+        Example for getting the first variable of the device called "TEST_DEVICE":
+
+            DEF net FIRST_DATA "The first data provided by the device" TEST_DEVICE 0
         """
         if len(lRecv) < 3:
             return "ERROR: Instruction DEF needs at least 2 parameters. Type HELP DEF for help."
@@ -171,12 +196,15 @@ class ScadaHandler:
         """
         Declare or update a local network device
 
-        Usage: NET device_name description number_of_variables
+        Usage: `NET device_name description number_of_variables`
 
         With:
+
             - device_name: the name of the device (used after for declare a variable with DEF net. See HELP NET)
             - description: Description of the device for human beings :)
             - number_of_variables: number of variables provided by the device
+
+        To define variables linked to the device, use the instruction `DEF net...`
         """
         if len(lRecv)!=4:
             return "ERROR: NET instruction needs 3 parameters. Type HELP NET for help."
@@ -190,10 +218,11 @@ class ScadaHandler:
             return "ERROR: Argument number of variables should be numeric: "+str(e)
         if not nVar > 0:
             return "ERROR: Argument number of variables should be positive"
+        scadaDevice = ScadaDevice(sDevice, nVar, lRecv[2])
         sAction = "updated" if sDevice in self.scadaDB.devices.keys() else "created"
         # Register of the device
-        self.scadaDB.addDevice(ScadaDevice(sDevice, nVar, lRecv[2]))
-        return "Device {} {}".format(sDevice, sAction)
+        self.scadaDB.addDevice(scadaDevice)
+        return "Device {} {}\ntoken={}".format(sDevice, sAction, scadaDevice.token)
 
 
     def defType_net(self, lArgs):
@@ -281,7 +310,7 @@ class ScadaHandler:
         """
         Delete a variable from the database
 
-        Usage : DEL [variable or local network device name]
+        Usage : `DEL [variable or local network device name]`
         """
         if len(lRecv)!=2:
             return "ERROR: Instruction DEL needs 1 parameter. Type HELP DEF for help."
@@ -300,27 +329,51 @@ class ScadaHandler:
 
     def instrList(self, lRecv):
         """
-        List available variables and local network device on the SCADA database
+        List available variables and local network devices on the SCADA database
 
-        @todo List Local network devices
+        Usage:
+
+        - `LIST`: list available variables and devices
+        - `LIST [variable or device id]`: display details on a variable or a device
         """
         if len(lRecv)==1:
-            l = ["%s: %s" % (s, self.scadaDB.vars[s].description) for s in self.scadaDB.vars.keys()]
+            lDevices = ["%s: %s" % (s, self.scadaDB.devices[s].description) for s in self.scadaDB.devices.keys()]
+            lVariables = ["%s: %s" % (s, self.scadaDB.vars[s].description) for s in self.scadaDB.vars.keys()]
+            l = []
+            if(len(lDevices)>0): 
+                l.append("# Devices:")
+                l.extend(lDevices)
+            if(len(lVariables)>0): 
+                l.append("# Variables:")
+                l.extend(lVariables)
             return "\r\n".join(l)
         else:
             sVar = lRecv[1]
-            if not self.scadaDB.exists(sVar) :
-                return "ERROR: Variable '{}' doesn\'t exist. Type LIST to get the list of existing variables.".format(sVar)
-            else:
+            if sVar in self.scadaDB.vars.keys():
                 l = ["%s: %s" % (k, str(v)) for k,v in self.scadaDB.vars[sVar].options.items()]
                 l.insert(0,"Type: "+self.scadaDB.vars[sVar].__class__.__name__[8:]) # [8:] for skeeping ScadaVar in the beginning of class name
                 l.insert(0,"Description: "+self.scadaDB.vars[sVar].description)
                 l.insert(0, "Variable: "+sVar)
                 return "\r\n".join(l)
+            elif sVar in self.scadaDB.devices.keys():
+                l = [
+                    "Device: " + sVar,
+                    "Description:" + self.scadaDB.devices[sVar].description,
+                    "Number of variables: {}".format(self.scadaDB.devices[sVar].n),
+                    "token: " + self.scadaDB.devices[sVar].token
+                    ]
+                return "\r\n".join(l)
+            else:
+                return "ERROR: Variable or device '{}' doesn\'t exist. Type LIST to get the list of existing variables and devices.".format(sVar)
 
     def instrHelp(self, lRecv):
         """
         Display help on the available instructions
+
+        Usage:
+
+        - `HELP`: list of available instructions
+        - `HELP [instruction]`: Documentation of an instruction
         """
         if len(lRecv)==1:
             l = [k + ": " + self.getFunctionDoc(v) for k,v in self.instructionSet.items()]

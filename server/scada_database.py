@@ -137,7 +137,7 @@ class ScadaDatabase:
         """
         self.vars = {}
         self.devices = {}
-        
+
         for sPin in self.lPins:
             self.add(ScadaVarArd(self, "A"+sPin, description="Arduino data on analog pin #%s" % (sPin)), False)
 
@@ -160,9 +160,6 @@ class ScadaDatabase:
         self.load()
         del self.devices[deviceId]
         self.save()
-
-    def exists(self, name):
-        return name in self.vars.keys()
 
     def get(self, name):
         try:

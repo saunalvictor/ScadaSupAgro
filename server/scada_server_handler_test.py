@@ -14,6 +14,10 @@ class TestScadaHandler():
         from scada_server_handler import ScadaHandler
         return ScadaHandler(False, dPrm)
 
+    def test_no_instruction(self):
+        scadaHdlr = self.init()
+        assert scadaHdlr.exec('') == ''
+
     def test_get(self):
         scadaHdlr = self.init()
         assert int(scadaHdlr.exec('get A0').split(";")[1]) == scadaHdlr.scadaDB.getAnalogic(0)
@@ -78,7 +82,7 @@ class TestScadaHandler():
         assert scadaHdlr.exec('net Not#Alphanumeric 1')[:5] == 'ERROR'
         assert scadaHdlr.exec('net DEVICE_TOTO Description NotNumeric')[:5] == 'ERROR'
         assert scadaHdlr.exec('net DEVICE_TOTO Description 0')[:5] == 'ERROR' # Number of variables <=0
-        assert scadaHdlr.exec('net TEST_DEVICE "Device description" 1') == "Device TEST_DEVICE created"
+        assert scadaHdlr.exec('net TEST_DEVICE "Device description" 1').splitlines()[0] == "Device TEST_DEVICE created"
 
     def test_del_device(self):
         scadaHdlr = self.init()
