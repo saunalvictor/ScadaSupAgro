@@ -18,7 +18,8 @@ class LoggerReader:
         """
         last_line = self.last_line(ignore_ending_newline=True).decode('utf-8')
         d = last_line.split(";")
-        dOut = [numericCast(s) for s in d[1:]]
+        # splitlines()[0] is for avoiding issue with partial line written at the end of the file
+        dOut = [numericCast(s.splitlines()[0]) for s in d[1:]]
         if bTimeStamp: dOut.insert(0,d[0])
         return dOut
 
