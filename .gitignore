@@ -13,3 +13,4 @@ python.bat
 /clients/scilab/conf_user.sce
 /clients/scilab/objectives.txt
 .vscode
+/site/

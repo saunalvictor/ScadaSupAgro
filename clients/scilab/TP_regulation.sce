@@ -30,8 +30,8 @@ mQ = []; // Mémorisation de la série de mesures
 scf0 = DisplayRegulation(cfg,mQ);
 
 if messagebox(["TP régulation"; msprintf("Durée : %i minutes",cfg.TimeDuration/60);...
-        "Prêt pour démarrer ?"], "modal", "question", ["Démarrer" "Annuler"]) == 1 then
-    
+    "Prêt pour démarrer ?"], "modal", "question", ["Démarrer" "Annuler"]) == 1 then
+
     fOut = OpenOutputFiles(cfg);
     if ~cfg.socket.Connected then
         mprintf("Open socket %i; Host %s:%i\n", cfg.socket.number,cfg.socket.sHost,cfg.socket.iPort)
@@ -46,13 +46,15 @@ if messagebox(["TP régulation"; msprintf("Durée : %i minutes",cfg.TimeDuration
         realtime(t);
         // Réception des données
         [Q,Y,D] = GetDischarge(cfg);
-        WriteOutputFiles(cfg,fOut,Q,Y,D);
-        mQ = [mQ;Q'];
-        
+        if Q<>[] & Y<>[] & D<>[] then
+            WriteOutputFiles(cfg,fOut,Q,Y,D);
+            mQ = [mQ;Q'];
+        end
+
         // Affichage et calcul des indicateurs
         DisplayRegulation(cfg,mQ,scf0);
     end
-    
+
     CloseOutputFiles(fOut);
     if cfg.socket.Connected then
         SOCKET_close(cfg.socket.number);

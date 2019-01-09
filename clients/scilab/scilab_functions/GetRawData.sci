@@ -11,9 +11,7 @@ function tD = GetRawData(cfg,tiRegisters)
         tiRegisters = cfg.tiRegisters
     end
     
-    sResp = [];
-    
-    sQuery = msprintf("GET %s",strcat(string(tiRegisters),','))
+    sQuery = msprintf("GET %s",strcat("A"+string(tiRegisters),','))
     mprintf("Sending ""%s"" to %s:%i\n",sQuery,cfg.socket.sHost,cfg.socket.iPort)
     if cfg.socket.bUse then
         if ~cfg.socket.Connected then
@@ -23,18 +21,29 @@ function tD = GetRawData(cfg,tiRegisters)
         end
         SOCKET_write(cfg.socket.number,sQuery)
         t1 = now()
-        while sResp==[] & now()-t1 < cfg.socket.TimeOut
+        tD = []
+        while tD==[] & now()-t1 < cfg.socket.TimeOut
             sResp = SOCKET_read(cfg.socket.number)
+            if sResp<>[] then
+                for i= 1:size(sResp,1)
+                    mprintf("Received %s\n",sResp(i))
+                    tsD = strsplit(sResp(i),";")
+                    iS = size(tsD,1)
+                    if iS==1+size(cfg.tiRegisters,2) then
+                        tD = evstr(tsD(2:$))'
+                        mprintf("Data =")
+                        mprintf("%i ",tD')
+                        mprintf("\n")
+                        break
+                    end
+                end
+            end
         end
     else
-        sResp =  strcat(repmat(string(int(90+rand()*20)),1,size(tiRegisters,2)),' ');
+        tD =  repmat(string(int(90+rand()*20)),1,size(tiRegisters,2));
     end
-    if sResp~=[] then
-        mprintf("Received %s from %s:%i\n",sResp,cfg.socket.sHost,cfg.socket.iPort)
-        tD = evstr("["+sResp+"]");
-    else 
+    if tD==[] then
         mprintf("Connection time out\n")
-        tD = []
     end
     
 endfunction

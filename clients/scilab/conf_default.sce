@@ -17,7 +17,7 @@ cfg.TimeStep = 1; // Time step of data acquisition in seconds
 cfg.TimeDuration = 5*60; // Duration of the experiment in seconds
 
 // List of registers for data acquisition
-cfg.tiRegisters = 3:6; // 3:6 = Entrées analogiques 1 à 4
+cfg.tiRegisters = 0:3; // Sorties des canaux 1 à 4
 
 //******************************************************************************
 // [ C A L I B R A T I O N ]
