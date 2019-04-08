@@ -1,2 +1,3 @@
-# Scada_DDorch
-Client/Server application for SCADA system installed at SupAgro Montpellier
+# Scada SupAgro
+
+Client/Server applications for SCADA system installed at SupAgro Montpellier.
