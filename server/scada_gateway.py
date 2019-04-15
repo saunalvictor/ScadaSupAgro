@@ -39,9 +39,9 @@ class ScadaGateway():
             try:
                 data = self.scadaDB.get(key)
                 timestamp = self.scadaDB.getTimeStamp(key)
+                self.log.debug('key={} timestamp={} value={}'.format(key,timestamp,data))
             except Exception as e:
                 self.log.error('Impossible to get variable {}: {}'.format(key,str(e)))
-            self.log.debug('key={} timestamp={} value={}'.format(key,timestamp,data))
             if timestamp != self.dLastDateTime[key]:
                 self.dLastDateTime[key] = timestamp
                 self.dTelemetry[key] = data
