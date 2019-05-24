@@ -39,17 +39,18 @@ scf0 = DisplayHauteurs(cfg);
 if messagebox(["Affichage des hauteurs d''eau"; msprintf("Durée : %i minutes",cfg.TimeDuration/60);...
         "Prêt pour démarrer ?"], "modal", "question", ["Démarrer" "Annuler"]) == 1 then
     
-    fOut = mopen(msprintf(strsubst(cfg.sOutputPath,"\","\\"),GetCurrentDateTime()),"w");
+    fOut = mopen(msprintf("%s%s.%s",strsubst(cfg.sOutputPath,"\","\\"),GetCurrentDateTime(1),"txt"),"w");
     sOutFormat = "%s\t"+strcat(repmat("%8.6f",size(cfg.tiRegisters,2),1),"\t")+"\n";
     // Defining time step for real time control
     realtimeinit(cfg.TimeStep);
+    kmax = cfg.TimeDuration / cfg.TimeStep
     // Boucle sur le temps déf dans les param
-    while 1==1
+    for k = 0:kmax
         // Controle du déclenchement en temps réel
-        realtime(t);
+        realtime(k);
         // Réception des données
         D = GetWaterLevel(cfg);
-        [sDate,vDate]=GetCurrentDateTime();
+        [sDate,vDate]=GetCurrentDateTime(1);
         mfprintf(fOut,sOutFormat,sDate,D');
         mD = [mD;D'];
         

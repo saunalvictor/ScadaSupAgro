@@ -29,14 +29,19 @@ function scf0 = DisplayRegulation(cfg,mD,scf0)
 
     for i = 1:size(cfg.tiRegisters,2)
         subplot(nL,nC,i);
-        plot2d(cfg.TimeLine*cfg.TimeStep,[cfg.mObj(:,i),mD2(:,i)]*1E3);
+        plot2d(cfg.TimeLine*cfg.TimeStep,[cfg.mObj(:,i),cfg.mObj(:,i)*0.8,cfg.mObj(:,i)*1.2,mD2(:,i)]*1E3);
+        e=gce(); p1=e.children(1); p2=e.children(2);
+        e.children(4).foreground=color("forestgreen");
+        e.children(3).foreground=color("grey");
+        e.children(2).foreground=color("grey");
+        e.children(1).foreground=color("navyblue");
         a=gca();
         if size(mD,1) > 1 then
             Vobj = inttrap(cfg.mObj(1:size(mD,1),i));
             Vdis = inttrap(mD(:,i));
-            RMSE = sqrt(sum((mD(:,i)-cfg.mObj(1:size(mD,1),i)).^2));
+            RMSE = sqrt(sum((mD(:,i)-cfg.mObj(1:size(mD,1),i)).^2)/size(mD,1));
             r = Vdis/Vobj
-            a.title.text = msprintf("Mesure n°%i - r%i = %4.2f - RMSE%i = %3.1f", ...
+            a.title.text = msprintf("Mesure n°%i - r%i = %4.2f - RMSE%i = %5.3f", ...
             i,i,r,i,RMSE);
         end
     end
