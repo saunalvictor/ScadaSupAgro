@@ -27,8 +27,12 @@ class NetDeviceHandler:
         # Check if the device exists in the database
         device = self.scadaDB.getDeviceFromToken(token)
         if not device:
-            self.log.error("Token not known: {}".format(token))
-            return "ERROR: The network device does not exist in the database. Connect to the SCADA server and type HELP NET for help."
+            # Reload database in case of new device
+            self.scadaDB = ScadaDatabase(self.log, self.dPrm)
+            device = self.scadaDB.getDeviceFromToken(token)
+            if not device: 
+                self.log.error("Token not known: {}".format(token))
+                return "ERROR: The network device does not exist in the database. Connect to the SCADA server and type HELP NET for help."
         # Check the number of data declared in the database
         if len(lV) != device.n:
             self.log.error("Number of data provided ({}) does not match with the device one ({})".format(len(lV),device.n))
